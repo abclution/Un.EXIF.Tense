@@ -1,4 +1,4 @@
-# Un.EXIF.Tense - An exiftool helper system letting more accomplish more. 
+# Un.EXIF.Tense - An exiftool helper system letting more people, accomplish more with less tension and stress. 
 
 Stressed out with the complexity of exiftool and its wonders, this  is a simple framework to use the full potential of exiftool, in a mortal time-frame and stress free. . ;)
 
