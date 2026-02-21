@@ -1,0 +1,104 @@
+# fixd_advanced_date_logic.config
+
+# Define the master list in the main package scope for global access
+@main::date_tags = (
+    
+    'Composite:SubSecModifyDate',
+    
+    'Exif:ModifyDate',            
+    'IFD0:ModifyDate',           
+    'XMP:ModifyDate',
+    
+    'Quicktime:TrackModifyDate',
+    'Quicktime:MediaModifyDate',
+    'System:FileModifyDate',
+    'System:FileInodeChangeDate',
+
+    'Composite:GPSDateTime',
+    'Composite:DateTimeCreated',
+
+    'GPS:GPSDateStamp',
+
+    'XMP:DateTimeDigitized',
+    'XMP:DateTimeOriginal',
+    'XMP:CreateDate',
+    'XMP:DateCreated',
+    
+
+    'Quicktime:CreateDate',
+    'Quicktime:CreationDate', 
+    'Quicktime:DateTimeOriginal',
+    'Quicktime:TrackCreateDate',  
+    'Quicktime:MediaCreateDate',  
+
+ 
+    'Exif:CreateDate',
+    'Exif:DateTimeOriginal',
+    
+    'IPTC:DateCreated',
+    'IPTC:DigitalCreationDate',  
+    'System:FileCreateDate',
+    
+
+
+
+);
+
+%Image::ExifTool::UserDefined = (
+    'Image::ExifTool::Composite' => {
+        SmartDate => {
+            Desire => { 0 => 'FileName', map { $_ + 1 => $main::date_tags[$_] } 0..$#main::date_tags },
+            ValueConv => q{
+                my $fn = shift @val;
+                my $target;
+                if ($fn =~ /(\d{4})[-_.:\s]?(\d{2})[-_.:\s]?(\d{2})/) {
+                    $target = "$1$2$3";
+                } elsif ($fn =~ /\b(1[0-9]{9})\b/) {
+                    my @t = gmtime($1);
+                    $target = sprintf("%04d%02d%02d", $t[5]+1900, $t[4]+1, $t[3]);
+                }
+                my @valid = grep { $_ && $_ gt '1970' } @val;
+                return (sort @valid)[0] unless $target && @valid;
+                my ($best, $min) = ($valid[0], 99999999);
+                for my $v (@valid) {
+                    my $c = $v; $c =~ s/\D//g;
+                    my $dist = abs(substr($c, 0, 8) - $target);
+                    if ($dist < $min) { $min = $dist; $best = $v; }
+                }
+                return $best;
+            },
+            PrintConv => '$self->ConvertDateTime($val)',
+        },
+        SmartDateMetaOnly => {
+            Desire => { map { $_ => $main::date_tags[$_] } 0..$#main::date_tags },
+            ValueConv => q{
+                my @valid = sort grep { $_ && $_ gt '1970' } @val;
+                return $valid[0];
+            },
+            PrintConv => '$self->ConvertDateTime($val)',
+        },
+        SmartDate_Debug => {
+            Desire => { 0 => 'FileName', map { $_ + 1 => $main::date_tags[$_] } 0..$#main::date_tags },
+            ValueConv => q{
+                my @labels = ('FileName', @main::date_tags);
+                my %found;
+                for (0..$#labels) {
+                    next unless $val[$_];
+                    my $v = $val[$_];
+                    $v =~ s/([+-]\d{2}:\d{2}$|[A-Z]{3}$|Z$)//g;
+                    $found{$labels[$_]} = $v;
+                }
+                my @unique = sort grep { $_ gt '1970' } values %found;
+                my %ranks;
+                $ranks{$unique[0]} = '[EARLIEST 1]' if $unique[0];
+                $ranks{$unique[1]} = '[EARLIEST 2]' if $unique[1] && $unique[1] ne $unique[0];
+                my @out;
+                for my $t (sort keys %found) {
+                    push @out, sprintf("%-30s: %-19s %s", $t, $found{$t}, $ranks{$found{$t}}||"");
+                }
+                return join("\n", @out) . "\n";
+            },
+        },
+    },
+);
+1;
