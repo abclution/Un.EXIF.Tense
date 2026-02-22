@@ -2,141 +2,185 @@
 # shellcheck disable=SC2016
 # Version: 1.0 Public Release, v7.2 Internal
 ###############################################################################
+# Locate the script directory for relative sourcing
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+readonly SCRIPT_DIR
 
-setDefaults() {
 
-	###############################################################################
-	#* USER FACING VARIABLES ######################################################
-	#* YOU CAN SET DEFAULT OPTIONS FOR COMMAND LINE SWITCHES BELOW
-	###############################################################################
-	_SRCDIR_=""
-	_DSTDIR_=""
-	_hashALGO_="SHA512"
-	_XMPFunction_="True"
-	_RECURSE_="True"
-	_QT_UTC_=0
-	_KEEPName_="True"
-	_TESTMODE_="False"
-	_TESTMODERESET_="False"
-	_VIDEOS_="True"
-	_PHOTOS_="True"
-	###############################################################################
-	
-	
-	###############################################################################
-	#* USER CONFIG: EXTENSION LISTS FOR TYPES OF FILES YOU WANT THIS SCRIPT TO DEAL WITH
-	###############################################################################
-	#! PHOTO EXTENSION LIST
-	declare -g -a EXTList_Photos=("webp" "dng" "jpg" "heic" "png" "gif" "bmp" "tiff" "tif")
-
-	#! VIDEO EXTENSION LIST
-	declare -g -a EXTList_Videos=("mov" "mp4" "mpg" "3gp" "wmv" "webm" "avi" "m4v")
-	###############################################################################
-	
-	
-	###############################################################################
-	#* USER CONFIG: VERBOSITY AND DEBUG MISC OPTIONS
-	###############################################################################
-	_DEBUG_="False"
-	_VERBOSE_="False"
-	vLVL=0 # Verbosity level for exiftool when set to true.
-	# Verbose overrides quiet mode, Verbose 0 exiftool prints current filename only.
-
-	#! DEBUG SLEEP TIMER, TIME BETWEEN COMMANDS TO DEBUG ONSCREEN INFO
-	# Can also be "wait" to wait for keypress
-	#sTIMER="wait"
-	sTIMER="2"
-	###############################################################################
-	
-		
-	###############################################################################
-	#* USER CONFIG: EXIFTOOL SETTINGS
-	###############################################################################
-	# IF PRESENT IN YOUR PATH, SIMPLY LIST AS "exiftool"
-	exiftoolPATH="/usr/bin/exiftool"
-	exiftoolCONFIG="./exiftool_config_Un.EXIF.Tense"
-	# WHEN USING KEEPING NAME OPTION, CAN USE THIS AS A SEPERATOR, TEMPLATE DEPENDENT
-	exifToolBaseNameSeperator="___"
-	#/home/andreas/.ExifTool_config.REFACTORED.V5"
-	#/fixd-toolkit/scripts/scripts.FILE-ORGANIZATION/_ORGANIZE-MyPHOTOS/In-DevelopmentProgress/EXIFToolConfigs/.ExifTool_config.REFACTORED.V8"
-	###############################################################################
-	
-	
-	###############################################################################
-	#* USER CONFIG: ARGFILES CONFIGURATION SETTINGS
-	###############################################################################
-	#! BASE PATH TO ARGFILE TEMPLATES
-	ARGFiles_PATH="./ARGfiles/SERIES01"
-	###############################################################################
-	# ARGFILE TEMPLATE NAMES (FILENAMES)
-	# List of argfile filenames in ARGFiles_PATH to run in the order you wish to run them.
-	# Can be formatted like this, all in one declaration, or one by one, or a mix.
-	#! declare -a TESTMODEARGFileTemplatesList=("TEMPLATE-01" "TEMPLATE-02")
-	# INIT BLANK ARRAY
-	declare -g -a ARGFileTemplatesList=()
-	ARGFileTemplatesList+=("TEMPLATE_S01-P01_MIGRATE-XMP-TO-EXT.XMP.argfile.sh")
-	ARGFileTemplatesList+=("TEMPLATE_S01-P02_CREATE.XMP.argfile.sh")
-	ARGFileTemplatesList+=("TEMPLATE_S01-P03_MOVE-RENAME-XMPSIDECARS.argfile.sh")
-	ARGFileTemplatesList+=("TEMPLATE_S01-P04_MOVE-RENAME-MEDIAFILES.argfile.sh")
-	#ARGFileTemplatesList+=("")
-	#echo -e "Templates active:${ARGFileTemplatesList[@]}\n"
-	# TODO ADD FILE EXISTENCE CHECK FOR TEMPLATES
-	###############################################################################
-	
-	
-	
-	###############################################################################
-	#* USER CONFIG: TESTMODE CONFIGURATION
-	###############################################################################
-	# Alternate list of argfile templates to be used in TESTMODE.
-	declare -g -a TESTMODEARGFileTemplatesList=()
-	TESTMODEARGFileTemplatesList+=("TEMPLATE_S01-P01_MIGRATE-XMP-TO-EXT.XMP.argfile.sh")
-	TESTMODEARGFileTemplatesList+=("TEMPLATE_S01-P02_CREATE.XMP.argfile.sh")
-	TESTMODEARGFileTemplatesList+=("TEMPLATE_S01-P03_MOVE-RENAME-XMPSIDECARS.argfile.sh")
-	TESTMODEARGFileTemplatesList+=("TEMPLATE_S01-P04_MOVE-RENAME-MEDIAFILES.argfile.sh")
-	
-	#echo -e "Templates active for TESTMODE (if active): ${TESTMODEARGFileTemplatesList[@]} \n"
-
-	###############################################################################
-	# TESTMODE FOLDERS AND PATHS
-	# THESE ARE RELEVENT WHEN -t (testmode) or -T switch (testmode reset) is enabled.
-		
-	# Define folders for test mode usage.
-	# DATA The folder containing the original media that is copied to the IN dir.
-	TESTMODE_data="/my/mediafiles"
-	# IN is where photos and vids will be copied and processed.
-	TESTMODE_in="/tmp/IN"
-	# OUT is destination after processing.
-	TESTMODE_out="/tmp/OUT"
-	###############################################################################
-	###############################################################################
-
-	prepInternalSettings() {
-		# Initialization of some default stuff used later.
-
-		# Anticlobber for exporting shell variables
-		RndStr=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 4)
-		exifToolCMD="$exiftoolPATH -config $exiftoolCONFIG "
-
-		if [[ "$_VIDEOS_" == "True" ]]; then
-			for VIDfmt in "${EXTList_Videos[@]}"; do
-				_EXTList_+="-ext"$'\n'"$VIDfmt"$'\n'
-			done
-		fi
-
-		if [[ "$_PHOTOS_" == "True" ]]; then
-			for IMGfmt in "${EXTList_Photos[@]}"; do
-				_EXTList_+="-ext"$'\n'"$IMGfmt"$'\n'
-			done
-		fi
-	}
-	prepInternalSettings
-
+resourceLoader() {
+	local target="${SCRIPT_DIR}/${1}"
+	if [[ -f "$target" ]]; then
+		# shellcheck source=/dev/null
+		source "$target"
+	else
+		printf "Error: File '%s' not found.\n" "$1" >&2
+		exit 1
+	fi
 }
+
+
+
+
+# setDefaults() {
+
+# 	###############################################################################
+# 	#* USER FACING VARIABLES ######################################################
+# 	#* YOU CAN SET DEFAULT OPTIONS FOR COMMAND LINE SWITCHES BELOW
+# 	###############################################################################
+# 	_SRCDIR_=""
+# 	_DSTDIR_=""
+# 	_hashALGO_="SHA512"
+# 	_XMPFunction_="True"
+# 	_RECURSE_="True"
+# 	_QT_UTC_=0
+# 	_KEEPName_="True"
+# 	_TESTMODE_="False"
+# 	_TESTMODERESET_="False"
+# 	_VIDEOS_="True"
+# 	_PHOTOS_="True"
+# 	###############################################################################
+
+# 	###############################################################################
+# 	#* USER CONFIG: EXTENSION LISTS FOR TYPES OF FILES YOU WANT THIS SCRIPT TO DEAL WITH
+# 	###############################################################################
+# 	#! PHOTO EXTENSION LIST
+# 	declare -g -a EXTList_Photos=("webp" "dng" "jpg" "heic" "png" "gif" "bmp" "tiff" "tif")
+
+# 	#! VIDEO EXTENSION LIST
+# 	declare -g -a EXTList_Videos=("mov" "mp4" "mpg" "3gp" "wmv" "webm" "avi" "m4v")
+# 	###############################################################################
+
+# 	###############################################################################
+# 	#* USER CONFIG: VERBOSITY AND DEBUG MISC OPTIONS
+# 	###############################################################################
+# 	_DEBUG_="False"
+# 	_VERBOSE_="False"
+# 	vLVL=0 # Verbosity level for exiftool when set to true.
+# 	# Verbose overrides quiet mode, Verbose 0 exiftool prints current filename only.
+
+# 	#! DEBUG SLEEP TIMER, TIME BETWEEN COMMANDS TO DEBUG ONSCREEN INFO
+# 	# Can also be "wait" to wait for keypress
+# 	#sTIMER="wait"
+# 	sTIMER="2"
+# 	###############################################################################
+
+# 	###############################################################################
+# 	#* USER CONFIG: EXIFTOOL SETTINGS
+# 	###############################################################################
+# 	# IF PRESENT IN YOUR PATH, SIMPLY LIST AS "exiftool"
+# 	exiftoolPATH="/usr/bin/exiftool"
+# 	exiftoolCONFIG="./exiftool_config_Un.EXIF.Tense"
+# 	# WHEN USING KEEPING NAME OPTION, CAN USE THIS AS A SEPERATOR, TEMPLATE DEPENDENT
+# 	exifToolBaseNameSeperator="___"
+# 	#/home/andreas/.ExifTool_config.REFACTORED.V5"
+# 	#/fixd-toolkit/scripts/scripts.FILE-ORGANIZATION/_ORGANIZE-MyPHOTOS/In-DevelopmentProgress/EXIFToolConfigs/.ExifTool_config.REFACTORED.V8"
+# 	###############################################################################
+
+# 	###############################################################################
+# 	#* USER CONFIG: ARGFILES CONFIGURATION SETTINGS
+# 	###############################################################################
+# 	#! BASE PATH TO ARGFILE TEMPLATES
+# 	ARGFiles_PATH="./ARGfiles/SERIES01"
+# 	###############################################################################
+# 	# ARGFILE TEMPLATE NAMES (FILENAMES)
+# 	# List of argfile filenames in ARGFiles_PATH to run in the order you wish to run them.
+# 	# Can be formatted like this, all in one declaration, or one by one, or a mix.
+# 	#! declare -a TESTMODEARGFileTemplatesList=("TEMPLATE-01" "TEMPLATE-02")
+# 	# INIT BLANK ARRAY
+# 	declare -g -a ARGFileTemplatesList=()
+# 	ARGFileTemplatesList+=("TEMPLATE_S01-P01_MIGRATE-XMP-TO-EXT.XMP.argfile.sh")
+# 	ARGFileTemplatesList+=("TEMPLATE_S01-P02_CREATE.XMP.argfile.sh")
+# 	ARGFileTemplatesList+=("TEMPLATE_S01-P03_MOVE-RENAME-XMPSIDECARS.argfile.sh")
+# 	ARGFileTemplatesList+=("TEMPLATE_S01-P04_MOVE-RENAME-MEDIAFILES.argfile.sh")
+# 	#ARGFileTemplatesList+=("")
+# 	#echo -e "Templates active:${ARGFileTemplatesList[@]}\n"
+# 	# TODO ADD FILE EXISTENCE CHECK FOR TEMPLATES
+# 	###############################################################################
+
+# 	###############################################################################
+# 	#* USER CONFIG: TESTMODE CONFIGURATION
+# 	###############################################################################
+# 	# Alternate list of argfile templates to be used in TESTMODE.
+# 	declare -g -a TESTMODEARGFileTemplatesList=()
+# 	TESTMODEARGFileTemplatesList+=("TEMPLATE_S01-P01_MIGRATE-XMP-TO-EXT.XMP.argfile.sh")
+# 	TESTMODEARGFileTemplatesList+=("TEMPLATE_S01-P02_CREATE.XMP.argfile.sh")
+# 	TESTMODEARGFileTemplatesList+=("TEMPLATE_S01-P03_MOVE-RENAME-XMPSIDECARS.argfile.sh")
+# 	TESTMODEARGFileTemplatesList+=("TEMPLATE_S01-P04_MOVE-RENAME-MEDIAFILES.argfile.sh")
+
+# 	#echo -e "Templates active for TESTMODE (if active): ${TESTMODEARGFileTemplatesList[@]} \n"
+
+# 	###############################################################################
+# 	# TESTMODE FOLDERS AND PATHS
+# 	# THESE ARE RELEVENT WHEN -t (testmode) or -T switch (testmode reset) is enabled.
+
+# 	# Define folders for test mode usage.
+# 	# DATA The folder containing the original media that is copied to the IN dir.
+# 	TESTMODE_data="/home/andreas/Desktop/Un.EXIF.Tense/test-src"
+# 	# IN is where photos and vids will be copied and processed.
+# 	TESTMODE_in="/home/andreas/Desktop/Un.EXIF.Tense/test-in"
+# 	# OUT is destination after processing.
+# 	TESTMODE_out="/home/andreas/Desktop/Un.EXIF.Tense/test-out"
+# 	###############################################################################
+# 	###############################################################################
+
+# 	prepInternalSettings() {
+# 		# Initialization of some default stuff used later.
+
+# 		# Anticlobber for exporting shell variables
+# 		RndStr=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 4)
+# 		exifToolCMD="$exiftoolPATH -config $exiftoolCONFIG "
+
+# 		if [[ "$_VIDEOS_" == "True" ]]; then
+# 			for VIDfmt in "${EXTList_Videos[@]}"; do
+# 				_EXTList_+="-ext"$'\n'"$VIDfmt"$'\n'
+# 			done
+# 		fi
+
+# 		if [[ "$_PHOTOS_" == "True" ]]; then
+# 			for IMGfmt in "${EXTList_Photos[@]}"; do
+# 				_EXTList_+="-ext"$'\n'"$IMGfmt"$'\n'
+# 			done
+# 		fi
+# 	}
+# 	prepInternalSettings
+
+# }
+
+
+
+loadConfig() {
+	resourceLoader "un-EXIF-tense.config"
+}
+
+
+
+prepInternalSettings() {
+	# Initialization of some default stuff used later.
+
+	# Array holding temp file names for cleanup.
+	declare -g -a FilesToCleanup=()
+
+	# Anticlobber for exporting shell variables
+	RndStr=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 4)
+	exifToolCMD="$exiftoolPATH -config $exiftoolCONFIG "
+
+	if [[ "$_VIDEOS_" == "True" ]]; then
+		for VIDfmt in "${EXTList_Videos[@]}"; do
+			_EXTList_+="-ext"$'\n'"$VIDfmt"$'\n'
+		done
+	fi
+
+	if [[ "$_PHOTOS_" == "True" ]]; then
+		for IMGfmt in "${EXTList_Photos[@]}"; do
+			_EXTList_+="-ext"$'\n'"$IMGfmt"$'\n'
+		done
+	fi
+}
+
 
 # EZ DEBUG FUNCTION, TAKES 4 ARGS THAT ARE EVALUATED AND SLEEPS AT THE END OF EACH CALL
 DEEBUG() {
-	
+
 	if [[ "$_DEBUG_" == "True" ]]; then
 
 		local dbugCMD01="$1"
@@ -166,15 +210,15 @@ DEEBUG() {
 			read -r -p "DEBUG: Press return to continue."
 		else
 			sleep $sTIMER
-		fi	
-		
+		fi
 
 	fi
 }
 
-
 #* INIT DEFAULT SETTINGS
+loadConfig
 setDefaults
+prepInternalSettings
 
 
 ###############################################################################
@@ -183,11 +227,11 @@ setDefaults
 ###############################################################################
 
 
-
-###############################################################################
-#! PRINTS PROGRAM SETTINGS DURING A RUN
 ###############################################################################
 settingsReport() {
+	###############################################################################
+	#! PRINTS PROGRAM SETTINGS DURING A RUN
+	###############################################################################
 
 	echo -e "
 	TESTMODE: 		$_TESTMODE_		RESET ENABLED?		$_TESTMODERESET_
@@ -226,18 +270,17 @@ settingsReport() {
 	OUT FOLDER:			$TESTMODE_out
 	TESTMODE TEMPLATES: ${TESTMODEARGFileTemplatesList[*]}\n
 
-	RANDOM STRING FOR THIS RUN: $RndStr
-
-"
+	RANDOM STRING FOR THIS RUN: $RndStr"
 }
 ###############################################################################
 
 
-
-###############################################################################
-#! PRINTS PROGRAM HELP WHEN CALLED OR WHEN ERROR OCCURS WITH INITIAL SWITCHES
 ###############################################################################
 showHELP() {
+	###############################################################################
+	#! PRINTS PROGRAM HELP WHEN CALLED OR WHEN ERROR OCCURS WITH INITIAL SWITCHES
+	###############################################################################
+
 	###############################################################################
 	# --- Usage Function ---
 	###############################################################################
@@ -265,11 +308,12 @@ showHELP() {
 }
 ###############################################################################
 
-###############################################################################
-###############################################################################
-#! VALIDATES SWITCHES AND THEIR NEEDED DATA TYPES BEFORE PROGRAM MAIN LOOP
+
 ###############################################################################
 optionsMenuSetup() {
+	###############################################################################
+	#! VALIDATES SWITCHES AND THEIR NEEDED DATA TYPES BEFORE PROGRAM MAIN LOOP
+	###############################################################################
 
 	###############################################################################
 	# --- Command Line switches handler ---
@@ -412,63 +456,64 @@ optionsMenuSetup() {
 		_RECURSE_="-r"
 	fi
 
-
 	DEEBUG \
 		'echo -e "\nCHECKPOINT: optionsMenuSetup \n"' \
 		'echo -e "NOTICE: User passed enough correct switches to continue.\n"'
 
-
-
-
 }
 optionsMenuSetup "$@"
-
 ###############################################################################
-###############################################################################
-#! TESTMODE VALIDATION: CHECK SETTINGS TO ENSURE CORRECT FILE OPERATION 
-###############################################################################
-	setupTESTMODE () {
-		#* ENSURE TEST MODE IS A REQUIREMENT OF RUNNING THE RESET SWITCH.
-		if [[ "$_TESTMODERESET_" == "True" ]]; then
-			_TESTMODE_="True"
-		fi
-
-		#* BOTH A SAFETY AND TO AVOID REWRITING SOURCE AND DEST ON FUNCTIONS DEALING 
-		#* WITH THE DATA DURING TESTMODE
-		if [[ "$_TESTMODE_" == "True" ]]; then
-			_SRCDIR_="$TESTMODE_in"
-			_DSTDIR_="$TESTMODE_out"
-		fi
-	
-		DEEBUG \
-			'echo -e "\nCHECKPOINT: setupTESTMODE TESTMODE VALIDATION\n"' \
-			'echo -e "_SRCDIR_ 		 		$_SRCDIR_  \n_TESTMODE_in				$TESTMODE_in \n should have equal value\n\n"'\
-			'echo -e "_DSTDIR_ 		 		$_DSTDIR_  \n_TESTMODE_out				$TESTMODE_out \n should have equal value\n\n"'\
-	
-	
-	}
-	setupTESTMODE
-
 
 
 ###############################################################################
+setupTESTMODE() {
+
+	###############################################################################
+	#! TESTMODE VALIDATION: CHECK SETTINGS TO ENSURE CORRECT FILE OPERATION
+	###############################################################################
+
+
+	#* ENSURE TEST MODE IS A REQUIREMENT OF RUNNING THE RESET SWITCH.
+	if [[ "$_TESTMODERESET_" == "True" ]]; then
+		_TESTMODE_="True"
+	fi
+
+	#* BOTH A SAFETY AND TO AVOID REWRITING SOURCE AND DEST ON FUNCTIONS DEALING
+	#* WITH THE DATA DURING TESTMODE
+	if [[ "$_TESTMODE_" == "True" ]]; then
+		_SRCDIR_="$TESTMODE_in"
+		_DSTDIR_="$TESTMODE_out"
+	fi
+
+	DEEBUG \
+		'echo -e "\nCHECKPOINT: setupTESTMODE TESTMODE VALIDATION\n"' \
+		'echo -e "_SRCDIR_ 		 		$_SRCDIR_  \n_TESTMODE_in				$TESTMODE_in \n should have equal value\n\n"' \
+		'echo -e "_DSTDIR_ 		 		$_DSTDIR_  \n_TESTMODE_out				$TESTMODE_out \n should have equal value\n\n"'
+
+}
+setupTESTMODE
 ###############################################################################
-#! ALL VARIABLES, SUBSTITUTIONS AND SWITCHES WE WISH TO PROGRAMMATICALLY USE
-#! IN THE ARGUMENT FILE ARE DEFINED HERE. 
-# TODO VARNAME + VARNAMEdesc WILL AUTO POPULATE DOCUMENTATION AND ARGFILES. 
-# TODO PARTIAL, NOT QUITE COMPLETE
+
+
 ###############################################################################
-ARGFile_TemplateVariables_New() {
-	
+ARGFile_TemplateVariables() {
+
+	###############################################################################
+	#! ALL VARIABLES, SUBSTITUTIONS AND SWITCHES WE WISH TO PROGRAMMATICALLY USE
+	#! IN THE ARGUMENT FILE ARE DEFINED HERE.
+	# TODO VARNAME + VARNAMEdesc WILL AUTO POPULATE DOCUMENTATION AND ARGFILES.
+	# TODO PARTIAL, NOT QUITE COMPLETE
+	###############################################################################
+
 	# DECLARE ASSOCIATIVE GLOBAL ARRAY, ESSENTIALLY DICTIONARY FROM PYTHON LAND
 	declare -A -g TVARS
-	
+
 	####################* SPECIALLY HANDLED VARS THAT HAVE ADDITIONAL PROCS ##############
 
 	#* MOST VARIABLES IN THIS AREA NEED AN ALL OR NOTHING STATE IN THE
 	#* TEMPLATE. HOWEVER, SETTING THEM TO "" CAUSES THE VARIABLE TO REMAIN
 	#* IN THE TEMPLATE EX $_VAR_ DOESNT GET REMOVED / SET TO NOTHING.
-	
+
 	reuseVERBOSEvar() {
 		if [[ "$_VERBOSE_" == "True" ]]; then
 			_VERBOSE_="-v$vLVL"
@@ -480,8 +525,6 @@ ARGFile_TemplateVariables_New() {
 
 	TVARS["VERBOSE"]="$_VERBOSE_"
 	TVARS["VERBOSEdesc"]="#* When verbose switch set, this will be -v[0...5], 5 being most verbose. Set by VLevel"
-
-
 
 	if [[ "$_KEEPName_" == "True" ]]; then
 		TVARS["KEEPNAME"]="$exifToolBaseNameSeperator\$basename"
@@ -577,7 +620,6 @@ ARGFile_TemplateVariables_New() {
 	TVARS["SUPRESSMINERRdesc"]="#* Suppress minor errors, if used, must be used equally (or none) on XMP + media argfiles. Otherwise problems."
 	TVARS["SUPRESSMINERR"]="-m"
 
-
 	TVARS["WRITEMODE_CREATE_INSERTMISSING"]="$(echo -e "-wm\ncg")"
 	TVARS["WRITEMODE_CREATE_INSERTMISSINGdesc"]="#* write mode CREATE AND ADD ONLY NEW TAGS "
 
@@ -590,7 +632,7 @@ ARGFile_TemplateVariables_New() {
 	TVARS["YEARMONTH"]='${SmartDate;DateFmt("%Y.%m-[%B]")}'
 	TVARS["YEARMONTHdesc"]="#* SmartDate function located in config"
 
-	#! ITERATE THROUGH KEY, VALUE PAIR, ASSIGN TO A STRING AND EVAL IT 
+	#! ITERATE THROUGH KEY, VALUE PAIR, ASSIGN TO A STRING AND EVAL IT
 	#! REGISTERING IT AS A REGULAR SCRIPT VARIABLE FOR WITHIN THIS SCRIPT
 	#! Create the key=value and register it from the associated array/dict.
 	for KEY in "${!TVARS[@]}"; do
@@ -599,16 +641,16 @@ ARGFile_TemplateVariables_New() {
 	done
 
 }
-ARGFile_TemplateVariables_New
+ARGFile_TemplateVariables
 ###############################################################################
 
 
+###############################################################################
+GenerateArgfile() {
 
-###############################################################################
-#! DO THE VARIABLE THING
-###############################################################################
-declare -g -a FilesToCleanup=()
-GenerateArgfileNew() {
+	###############################################################################
+	#! DO THE VARIABLE THING
+	###############################################################################
 
 	local ARGFile_Template="$1"
 	# Name of ARGfile template to work on, present in the $ARGFiles_PATH destination.
@@ -619,7 +661,7 @@ GenerateArgfileNew() {
 
 	FilesToCleanup+=("$ARGFILE_TEMP")
 	FilesToCleanup+=("$ARGFILE_STRIPPED")
-	
+
 	local WHITELIST_envsubst=""
 
 	local DOCUMENT_BODY=""
@@ -631,24 +673,19 @@ GenerateArgfileNew() {
 		local LABELValue="${TVARS[${KEY}]}"
 		local ExportLABELName="_${LABELName}_"
 
-
-		
 		if [ -n "${LABELValue}" ]; then
 
-
 			#! Special case for certain special variables so it deletes the variable in the template.
-			#! If I recall, a blank export, unsets the export, so it needs a value that will resolve 
-			#! to blank by envsubst.  
+			#! If I recall, a blank export, unsets the export, so it needs a value that will resolve
+			#! to blank by envsubst.
 			if [ "${LABELValue}" == "null" ]; then
 				LABELValue=""
 				ExportLABELDESCValue=""
 			fi
 
-
-			
 			#! Export label & value to subshell for envsubst
 			export "$ExportLABELName=$LABELValue"
-			
+
 			# Build debuglist wether we need or not.
 			DEBUGdata+=$(fixd_format_log_entry "EXPORT STRING:" "$ExportLABELName='$LABELValue'" " \n" "15" "150")
 
@@ -659,15 +696,13 @@ GenerateArgfileNew() {
 			DOCUMENT_BODY+=$(fixd_format_log_entry "# \$$ExportLABELName" "[ $LABELValue ]" " \n" "40" "150")
 
 		fi
-		
-	done
 
+	done
 
 	# Strip blank lines and lines starting with # (comments)
 	grep -o '^[^#]*' "$ARGFile_Template" >"$ARGFILE_STRIPPED"
 	#! Strip tabs and whitespace
 	sed -i 's/[[:blank:]]*$//' "$ARGFILE_STRIPPED"
-
 
 	local DOCUMENT_HEADER="# =========================================================\n"
 	DOCUMENT_HEADER+="# EXPORTED VARIABLES for $ARGFile_Template \n"
@@ -679,40 +714,38 @@ GenerateArgfileNew() {
 
 	DEEBUG \
 		'echo -e "\nCHECKPOINT: GenerateArgfileNew - $ARGFile_Template \n"' \
-		'echo -e "EXPORT strings."'\
-		'echo -e "$DEBUGdata"'\
-		'echo -e "##########EXPORT strings end ########################\n\n"'\
-		'echo -e "\nARGFILE EXPORTS\n\n$ARGFILE_TEMP"'\
-		'cat $ARGFILE_TEMP'\
+		'echo -e "EXPORT strings."' \
+		'echo -e "$DEBUGdata"' \
+		'echo -e "##########EXPORT strings end ########################\n\n"' \
+		'echo -e "\nARGFILE EXPORTS\n\n$ARGFILE_TEMP"' \
+		'cat $ARGFILE_TEMP' \
 		'echo -e "\nCHECKPOINT: GenerateArgfileNew END - $ARGFile_Template \n"'
 
-
-	# DO THE VARIABLE SWAP 
+	# DO THE VARIABLE SWAP
 	envsubst "$WHITELIST_envsubst" <"$ARGFILE_STRIPPED" >>"$ARGFILE_TEMP"
-
 
 }
 ###############################################################################
 
 
-
-
-###############################################################################
-#! RESETS DATASOURCES FOR THE TESTING OF YOUR ARGFILES 
 ###############################################################################
 resetTESTData() {
-	
+
+	###############################################################################
+	#! RESETS DATASOURCES FOR THE TESTING OF YOUR ARGFILES
+	###############################################################################
+
 	DEEBUG \
 		'echo -e "\nCHECKPOINT: resetTESTData - PRE-delete  \n"' \
-		'echo -e "\nMaking a copy of test set data from $TESTMODE_data to $TESTMODE_in\n"'\
-		'echo -e "Please note the default copy will NOT copy hidden files or .dirs. "'\
+		'echo -e "\nMaking a copy of test set data from $TESTMODE_data to $TESTMODE_in\n"' \
+		'echo -e "Please note the default copy will NOT copy hidden files or .dirs. "'
 
 	if [[ "$_DEBUG_" == "True" ]]; then
 
 		echo -e "\nRemoving data from $TESTMODE_in and $TESTMODE_out."
 		rm -Rfv "${TESTMODE_in:?}/"*
 		rm -Rfv "${TESTMODE_out:?}/"*
-		
+
 		cp -vinar --reflink=always "$TESTMODE_data"/* "$TESTMODE_in"/
 
 		DEEBUG \
@@ -725,32 +758,32 @@ resetTESTData() {
 		cp -inar --reflink=always "$TESTMODE_data"/* "$TESTMODE_in"/
 
 	fi
-	
+
 	echo -e "\nTESTDATA reset!"
 
 }
 ###############################################################################
 
-
-
-###############################################################################
-#! MAIN WORK LOOP FOR RUNNING EXIFTOOL WITH YOUR ARGFILES
 ###############################################################################
 beginPhotoVideoSort() {
+
+	###############################################################################
+	#! MAIN WORK LOOP FOR RUNNING EXIFTOOL WITH YOUR ARGFILES
+	###############################################################################
+
 	local TemplatesList=("$@")
 
 	for template in "${TemplatesList[@]}"; do
-		
-		GenerateArgfileNew "$ARGFiles_PATH/$template"
-        $exifToolCMD -@ "$ARGFILE_TEMP"
-	
+
+		GenerateArgfile "$ARGFiles_PATH/$template"
+		$exifToolCMD -@ "$ARGFILE_TEMP"
+
 		DEEBUG \
-			'echo -e "\nCHECKPOINT: beginPhotoVideoSort\n"'\
-			'echo -e "\nUSED THIS TEMPLATE:\n$template \n"'\
-			'echo -e "\nCREATED COMPLETED ARGFILE:\n$EDITOR $ARGFILE_TEMP\n"'\
+			'echo -e "\nCHECKPOINT: beginPhotoVideoSort\n"' \
+			'echo -e "\nUSED THIS TEMPLATE:\n$template \n"' \
+			'echo -e "\nCREATED COMPLETED ARGFILE:\n$EDITOR $ARGFILE_TEMP\n"' \
 			'echo -e "\nRAN THIS COMMAND:\n$exifToolCMD -@ $ARGFILE_TEMP \n"'
-	
-	
+
 	done
 
 }
@@ -758,15 +791,17 @@ beginPhotoVideoSort() {
 
 
 ###############################################################################
-#! TODO NOT SURE IF ITS CLEANING UP ALL
-###############################################################################
 tempFileCLEANUP() {
-	
+
+	###############################################################################
+	#! TODO NOT SURE IF ITS CLEANING UP ALL
+	###############################################################################
+
 	local cleanTIMER=$1
 
 	echo -e "Removing temporary files in $cleanTIMER seconds, Ctrl-C to preserve"
 	sleep $cleanTIMER
-	
+
 	for FILE in "${FilesToCleanup[@]}"; do
 
 		echo "Deleting $FILE"
@@ -774,24 +809,22 @@ tempFileCLEANUP() {
 
 	done
 
-
-
-
 }
 ###############################################################################
 
 
 ###############################################################################
-#! BETTER OUTPUT FORMATTING
-###############################################################################
 fixd_format_log_entry() {
+
+	###############################################################################
+	#! BETTER OUTPUT FORMATTING
+	###############################################################################
 	local LCol="$1"
 	local MCol="$2"
 	local RCol="$3"
 
 	local LColSize="${4:-40}"
 	local MColSize="${5:-55}"
-	
 
 	# Flatten physical newlines into spaces for the log entry only
 	local clean_val="${MCol//$'\n'/ }"
@@ -800,38 +833,32 @@ fixd_format_log_entry() {
 	[[ ${#clean_val} -gt ${MColSize} ]] && clean_val="${clean_val:0:${MColSize}}..."
 
 	# Formatting: %-25s (25 chars wide, left-aligned)
-#	printf "%-40s %-55s %s\n" \
+	#	printf "%-40s %-55s %s\n" \
 
-	printf "%-${LColSize}s %-${MColSize}s %s\n"\
+	printf "%-${LColSize}s %-${MColSize}s %s\n" \
 		"$LCol" \
 		"$clean_val" \
 		"$RCol"
 }
 ###############################################################################
-###############################################################################
-#!
-###############################################################################
+
+
+
 ###############################################################################
 #! #### END OF FUNCTION DEFINITIONS  ##########################################
-
-
-
-
 
 #* MAIN PROGRAM LOOP BELOW
 ###############################################################################
 
 if [[ "$_DEBUG_" == "True" ]]; then
-	
+
 	settingsReport
 	DEEBUG \
-		'echo -e "\nCHECKPOINT: settingsReport \n"' 
+		'echo -e "\nCHECKPOINT: settingsReport \n"'
 
-	
 fi
 
 if [[ $_TESTMODE_ == "False" ]]; then
-
 
 	echo -e "\nSORTING MEDIA..."
 	beginPhotoVideoSort "${ARGFileTemplatesList[@]}"
@@ -841,8 +868,6 @@ if [[ $_TESTMODE_ == "False" ]]; then
 
 	exit
 fi
-
-
 
 ###############################################################################
 #* TESTMODE ENABLED BELOW BELOW
@@ -865,7 +890,6 @@ if [[ $_TESTMODERESET_ == "True" ]]; then
 	# Out is destination after processing.
 	echo -e "\nTEST DIR OUT:\n$TESTMODE_out\n"
 
-	
 	echo -e "\nTESTMODEARGFileTemplatesList is :\n" "${TESTMODEARGFileTemplatesList[*]}\n"
 
 	tempFileCLEANUP 5

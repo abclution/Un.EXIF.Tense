@@ -1,0 +1,138 @@
+
+
+
+
+# #!/bin/bash
+# # shellcheck=disable 
+# ARGFile_TemplateVariables_New() {
+	
+# 	# DECLARE ASSOCIATIVE GLOBAL ARRAY, ESSENTIALLY DICTIONARY FROM PYTHON LAND
+# 	declare -A -g TVARS
+	
+# 	####################* SPECIALLY HANDLED VARS THAT HAVE ADDITIONAL PROCS ##############
+
+# 	#* MOST VARIABLES IN THIS AREA NEED AN ALL OR NOTHING STATE IN THE
+# 	#* TEMPLATE. HOWEVER, SETTING THEM TO "" CAUSES THE VARIABLE TO REMAIN
+# 	#* IN THE TEMPLATE EX $_VAR_ DOESNT GET REMOVED / SET TO NOTHING.
+	
+# reuseVERBOSEvar() {
+# 	if [[ "$_VERBOSE_" == "True" ]]; then
+# 		_VERBOSE_="-v$vLVL"
+# 	else
+# 		_VERBOSE_="null"
+# 	fi
+# }
+# reuseVERBOSEvar
+
+# "VERBOSE"="$_VERBOSE_"
+# "VERBOSEdesc"="#* When verbose switch set, this will be -v[0...5], 5 being most verbose. Set by VLevel"
+
+
+
+# if [[ "$_KEEPName_" == "True" ]]; then
+# "KEEPNAME"="$exifToolBaseNameSeperator\$basename"
+# "KEEPNAMEdesc"="#* Blank unless -k keepname option enabled, Seperator + original filename if switch set"
+# else
+# "KEEPNAME"="null"
+# "KEEPNAMEdesc"="null"
+# fi
+
+# 	####################* END SPECIALLY HANDLED VARS THAT HAVE ADDITIONAL PROCS ##############
+
+"ADDTAG_IMAGEHASH"="$(echo -e "-api\nImageHashType=$_hashALGO_\n-XMP:OriginalImageHash<ImageDataHash")"
+"ADDTAG_IMAGEHASHdesc"="#* Creates imagehash tag."
+
+"ADDTAG_PRESERVEDFILENAMEdesc"="#* Adds the PreservedFileName tag."
+"ADDTAG_PRESERVEDFILENAME"="-XMP-xmpMM:PreservedFileName<filename"
+
+"ANDROIDMANUFACTURER"='${Keys:AndroidManufacturer;$_="[$_]"}'
+"ANDROIDMANUFACTURERdesc"="#* Manufacturer"
+
+"ANDROIDMODEL"='${Keys:AndroidModel;$_="[$_]"}'
+"ANDROIDMODELdesc"="#* Model of android phone."
+
+"COUNTER"='%+3c'
+"COUNTERdesc"="#* Counter (Filename collision avoidance.)"
+
+"DDATEFORMAT"="$(echo -e "-d\n%Y-%m-%d_%H.%M.%S__")"
+"DDATEFORMATdesc"="#* (Prefer per dir option) -d/-dateFormat - Format for date/time values"
+
+"DIRSTARTdesc"="#* Directory output destination start command."
+"DIRSTART"="-Directory<"
+
+"DSTDIR"="$_DSTDIR_"
+"DSTDIRdesc"="#* DESTINATION DIRECTORY: OUTPUT directory for processed and renamed images"
+
+"EXTdesc"="#* File Extension"
+"EXT"='%e'
+
+"EXTLIST"="$_EXTList_"
+"EXTLISTdesc"="#* Extensions to work on"
+
+"FILEORDERFILENAME"="$(echo -e "-fileOrder\n-FileName")"
+"FILEORDERFILENAMEdesc"="#* Process in order of filename. Slow, dont use if possible."
+
+"FNAMESTARTdesc"="#* Rename/move starting with SmartDate function included in the config that came with this script."
+"FNAMESTART"='-filename<'
+
+"GETTAGSFROMCURRENTFILE"="$(echo -e "-tagsfromfile\n@")"
+"GETTAGSFROMCURRENTFILEdesc"="#* GETS / SETS TAGS FROM CURRENT FILE "
+
+"HASHALGORITHM"="$_hashALGO_"
+"HASHALGORITHMdesc"="#* Algorithm for creating the XMP:OriginalImageHash tag."
+
+"IMAGESIZE"='${ImageSize;$_="[$_]"}'
+"IMAGESIZEdesc"="#* Image Size composite tag"
+
+"MAKE"='${Make;$_="[$_]"}'
+"MAKEdesc"="#* Make of Android phone tag."
+
+"MODEL"='${Model;$_="[$_]"}'
+"MODELdesc"="#* Model of camera/phone"
+
+"NOEXIFDESTdesc"="#* FOLDER NAME FOR NOEXIF DESTINATION DIRECTORY: OUTPUT directory for items without EXIF."
+"NOEXIFDEST"="NO-EXIF"
+
+"NOXMP"="$(echo -e "--ext\nxmp")"
+"NOXMPdesc"="#* DO NOT WORK ON XMP FILES # Don't process xmp files, strangely enough used mostly to process xmp files.. lol.. "
+
+"PRESERVEdesc"="#* (-P / -preserve) Preserve file modification date/time"
+"PRESERVE"="-P"
+
+"QUIET"="$(echo -e "-q")"
+"QUIETdesc"="#* Quieter output, put twice for very quiet. shhbbyisok"
+
+"RECURSE"="$_RECURSE_"
+"RECURSEdesc"="#* Recurse. If recurse switch set, this will be -r, otherwise null/empty. "
+
+"SDATEFULL"='${SmartDate;DateFmt("%Y-%m-%d_%H.%M.%S__")}'
+"SDATEFULLdesc"="#* 2020-10-02_14.01.31__ SmartDate full output, used for filename usually."
+
+"SHHBBYISOK"="$(echo -e "-m\n-q\n-q")"
+"SHHBBYISOKdesc"="#* -m -q -q Supress minor errors and super quiet shortcut tag."
+
+"SRCDIR"="$_SRCDIR_"
+"SRCDIRdesc"="#* SOURCE DIRECTORY: INPUT directory containing unprocessed media."
+
+"SRCFILE_EXT_XMP"="$(echo -e "-srcfile\n%d%f.%e.xmp")"
+"SRCFILE_EXT_XMPdesc"="#* DIRECT ACTIONS TO FILENAME.EXT.XMP THIS FILE INSTEAD OF CURRENT FILE"
+
+"SRCFILE_XMP"='$(echo -e "-srcfile\n%d%f.xmp")'
+"SRCFILE_XMPdesc"="#* DIRECT ACTIONS TO FILENAME.XMP THIS FILE INSTEAD OF CURRENT FILE"
+
+"SUPRESSMINERRdesc"="#* Suppress minor errors, if used, must be used equally (or none) on XMP + media argfiles. Otherwise problems."
+"SUPRESSMINERR"="-m"
+
+
+"WRITEMODE_CREATE_INSERTMISSING"="$(echo -e "-wm\ncg")"
+"WRITEMODE_CREATE_INSERTMISSINGdesc"="#* write mode CREATE AND ADD ONLY NEW TAGS "
+
+"XIAOMIPRODUCTNAME"='${Keys:XiaomiProductMarketname;$_="[$_]"}'
+"XIAOMIPRODUCTNAMEdesc"="#* Phone name tag from Xiaomi"
+
+"YEAR"='${SmartDate;DateFmt("%Y")}'
+"YEARdesc"="#* YEAR Folder"
+
+"YEARMONTH"='${SmartDate;DateFmt("%Y.%m-[%B]")}'
+"YEARMONTHdesc"="#* SmartDate function located in config"
+
