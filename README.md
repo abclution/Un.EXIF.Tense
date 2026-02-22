@@ -15,6 +15,8 @@ Add prefix to exported variable to not clobber existing environtment variables.
 
 Create function to update original template with variable descriptions programatically.
 
+Investigate streaming argfile for more dynamic testing and building of templates.
+
 
 __Known Issues:__
 
@@ -33,11 +35,7 @@ Exiftool, is a very particular application of genius, madness, and immense conce
 *At the very least when I try to utilize it…* *I spend as much time getting the formatting of the command and the right quoteing that it exhausts me before I get to play with all its features, or get my media files sorted the way I want..*
 
 
-The built-in argfile capability simplifies commands and forgoes having to learn complex escaping of mixed language commands. Wish I knew about argfile options a bit sooner.. however, it does not support variable substitution in a script, it does however using environment variables.
-
-
-
-The exiftool switches in an argfile function as expected without stress or worry... however there is one or two caveats. Argfiles cannot do substitution like a bash script, and variables must be exported to the environment to use them as well. This is much less convienient than a script.
+The built-in argfile capability simplifies commands and forgoes having to learn complex escaping of mixed language commands. Wish I knew about argfile options a bit sooner.. The exiftool switches in an argfile function as expected without stress or worry... however there is one or two caveats. Argfiles cannot do substitution like a bash script, and variables must be exported to the environment to use them as well. This is much less convienient than a script.
 
 
 ARGFILE STRING REPLACEMENT VARS, DA GOOD STUFF
@@ -67,6 +65,7 @@ So we use a whitelist building out the whitelist programmatically of what it sho
 ## Core Workflow
 
 The system operates through a four-stage pipeline:
+
 
 
 
