@@ -3,6 +3,7 @@
 **Un.EXIF.Tense** is a high-performance wrapper for `exiftool` designed to automate the organization of massive photo and video libraries. It eliminates "quoting hell" by utilizing Bash-injected `argfiles`, allowing for complex metadata operations with minimal syntax overhead.
 
 
+
 # An exiftool helper system letting more people, accomplish more with less tension and stress.
 
 Stressed out with the complexity of exiftool and its wonders, this  is a simple framework to use the full potential of exiftool, in a mortal time-frame and stress free. . ;)
@@ -14,7 +15,12 @@ Stressed out with the complexity of exiftool and its wonders, this  is a simple 
 Exiftool, is a very particular application of genius, madness, and immense concentration, focus, effort and masochism. *At the very least when I try to utilize it…* *I spend as much time getting the formatting of the command and the right quoteing that it exhausts me before I get to play with all its features, or get my media files sorted the way I want..*
 
 
-The argfile simplifies commands and forgoes having to learn complex escaping of commands.
+The built-in argfile capability simplifies commands and forgoes having to learn complex escaping of commands. Wish I knew about that a bit sooner.. however, it does not support variable substitution in a script, it does however using environment variables. 
+
+
+UnEXIFTense helps turn argfiles into a full blown template system.
+
+ 
 
 The exiftool switches function as expected without stress or worry... however there is one or two caveats.
 However, argfiles cannot do substituion like a bash script, and variables must be exported to the environment to use them as well. This is less convienient than a script.
@@ -29,7 +35,7 @@ Rules for creating your own variable replacements for argfiles
 # ! TODO We add prefix to exported variable to not clobber existing environtment variables.
 ```
 
-So why the contorsion with renaming variables etc. envsubst which assists us to replace variables, is hamfisted and replaces anything that it thinks may be correct. 
+So why the contorsion with renaming variables etc. envsubst which assists us to replace variables, is hamfisted and replaces anything that it thinks may be correct.
 
 
 So we use a whitelist building out the whitelist programmatically with sequenced variable names gives the opportunity to add / adjust the program and template with minimal addtional lines of code.
