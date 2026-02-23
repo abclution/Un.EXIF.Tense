@@ -6,7 +6,6 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 readonly SCRIPT_DIR
 
-
 resourceLoader() {
 	local target="${SCRIPT_DIR}/${1}"
 	if [[ -f "$target" ]]; then
@@ -17,9 +16,6 @@ resourceLoader() {
 		exit 1
 	fi
 }
-
-
-
 
 # setDefaults() {
 
@@ -146,16 +142,13 @@ resourceLoader() {
 
 # }
 
-
-
 loadConfig() {
-	resourceLoader "un-EXIF-tense.config"
+	resourceLoader "un.exif.tense.CONFIG"
 }
-
-
 
 prepInternalSettings() {
 	# Initialization of some default stuff used later.
+	myUID=$(id -u)
 
 	# Array holding temp file names for cleanup.
 	declare -g -a FilesToCleanup=()
@@ -176,7 +169,6 @@ prepInternalSettings() {
 		done
 	fi
 }
-
 
 # EZ DEBUG FUNCTION, TAKES 4 ARGS THAT ARE EVALUATED AND SLEEPS AT THE END OF EACH CALL
 DEEBUG() {
@@ -220,12 +212,10 @@ loadConfig
 setDefaults
 prepInternalSettings
 
-
 ###############################################################################
 #* #### START OF FUNCTION DEFINITIONS  ##########################################
 #! BEYOND THIS POINT, THERE BE DRAGONS and DAMSELS....... AND MORE CODE
 ###############################################################################
-
 
 ###############################################################################
 settingsReport() {
@@ -274,7 +264,6 @@ settingsReport() {
 }
 ###############################################################################
 
-
 ###############################################################################
 showHELP() {
 	###############################################################################
@@ -307,7 +296,6 @@ showHELP() {
 
 }
 ###############################################################################
-
 
 ###############################################################################
 optionsMenuSetup() {
@@ -464,14 +452,12 @@ optionsMenuSetup() {
 optionsMenuSetup "$@"
 ###############################################################################
 
-
 ###############################################################################
 setupTESTMODE() {
 
 	###############################################################################
 	#! TESTMODE VALIDATION: CHECK SETTINGS TO ENSURE CORRECT FILE OPERATION
 	###############################################################################
-
 
 	#* ENSURE TEST MODE IS A REQUIREMENT OF RUNNING THE RESET SWITCH.
 	if [[ "$_TESTMODERESET_" == "True" ]]; then
@@ -494,9 +480,100 @@ setupTESTMODE() {
 setupTESTMODE
 ###############################################################################
 
-
 ###############################################################################
 ARGFile_TemplateVariables() {
+
+	# DECLARE ASSOCIATIVE GLOBAL ARRAY, ESSENTIALLY DICTIONARY FROM PYTHON LAND
+
+	loadExternalVarsToAssArray() {
+
+		# File containing vars to insert into dstArray
+		local f_srcData="$1"
+
+		# Name of associated array.
+		dstArray_VARS="$2"
+		dstArray_DESC="$3"
+
+		declare -A -g "$dstArray_VARS"
+		declare -A -g "$dstArray_DESC"
+
+		if [[ ! -f "$f_srcData" ]]; then
+			printf "Error: Configuration file '%s' not found.\n" "$f_srcData" >&2
+			return 1
+		fi
+
+		f_srcData_STRIPPED="$(mktemp --suffix=".argfile" "${TMPDIR:-/run/user/$myUID/}f_srcData_STRIPPED.${RndStr}.XXXXXX")"
+
+		#REPLACED BELOW	# grep -o '^[^#]*' "$externalVarlist" >"$externalVarlist_STRIPPED"
+		#* Strip blank lines and lines starting with # (comments)
+		grep -Ev "^#|^$" "${f_srcData}" >"${f_srcData_STRIPPED}"
+
+		#* Strip tabs and whitespace
+		sed -i 's/[[:blank:]]*$//' "${f_srcData_STRIPPED}"
+
+		f_srcData_SPLIT_VARS="$(mktemp --suffix=".argfile" "${TMPDIR:-/run/user/$myUID/}f_srcData_SPLIT_VARS_TEMP.${RndStr}.XXXXXX")"
+		f_srcData_SPLIT_DESC="$(mktemp --suffix=".argfile" "${TMPDIR:-/run/user/$myUID/}f_srcData_SPLIT_DESC_TEMP.${RndStr}.XXXXXX")"
+
+		cat "${f_srcData_STRIPPED}" | grep -siv 'desc\"=' | sort >"${f_srcData_SPLIT_VARS}"
+		cat "${f_srcData_STRIPPED}" | grep -si 'desc\"=' | sort >"${f_srcData_SPLIT_DESC}"
+
+		FilesToCleanup+=("${f_srcData_STRIPPED}")
+		FilesToCleanup+=("${f_srcData_SPLIT_VARS}")
+		FilesToCleanup+=("${f_srcData_SPLIT_DESC}")
+
+		DEEBUG \
+			'echo -e "\nCHECKPOINT: externalVarlist_STRIPPED VALIDATION\n\n"' \
+			'echo -e "###############################################################################\n"' \
+			'echo -e "${f_srcData_SPLIT_VARS}\n"' \
+			'cat "${f_srcData_SPLIT_VARS}" | sort' \
+			'echo -e "###############################################################################\n"' \
+			'echo -e "###############################################################################\n"' \
+			'echo -e "${f_srcData_SPLIT_DESC}\n"' \
+			'cat "${f_srcData_SPLIT_DESC}"| sort' \
+			'echo -e "###############################################################################\n"'
+
+		loadAssArray() {
+			# Read file line-by-line, ignoring comments and empty lines
+			while IFS='=' read -r KEY VALUE || [[ -n "$KEY" ]]; do
+
+				#echo -e "EXACT VALUES ARE: $KEY $VALUE"
+				THIS="$2[${KEY}]=${VALUE}"
+				eval "${THIS}"
+
+			done <"$1"
+		}
+
+		loadAssArray "${f_srcData_SPLIT_VARS}" "$dstArray_VARS"
+		loadAssArray "${f_srcData_SPLIT_DESC}" "$dstArray_DESC"
+
+	}
+
+	# Pass filename of external var list, main array of vars and secondary of description of the first vars.
+	loadExternalVarsToAssArray "$f_externalVarlist" "TVARS" "TVARSdesc"
+
+	# load_external_config_data() {
+	# 	if [[ ! -f "$externalVarlist" ]]; then
+	# 		printf "Error: Configuration file '%s' not found.\n" "$externalVarlist" >&2
+	# 		return 1
+	# 	fi
+
+	# 	while IFS='=' read -r KEY VALUE || [[ -n "$KEY" ]]; do
+	# 		# Strip leading/trailing whitespace from key
+	# 		KEY=$(echo "$KEY" | xargs 2>/dev/null)
+
+	# 		# Skip empty lines or comment lines
+	# 		[[ -z "$KEY" || "$KEY" =~ ^# ]] && continue
+
+	# 		# Construct and evaluate
+	# 		THIS="TVARS[\"${KEY}\"]=${VALUE}"
+
+	# 		eval "${THIS}"
+	# 		echo -e "${THIS}\n"
+
+	# 		#export "${KEY}=${VALUE}"
+	# 	done < "$externalVarlist"
+	# }
+	#		done <"$externalVarlist_STRIPPED"
 
 	###############################################################################
 	#! ALL VARIABLES, SUBSTITUTIONS AND SWITCHES WE WISH TO PROGRAMMATICALLY USE
@@ -504,9 +581,6 @@ ARGFile_TemplateVariables() {
 	# TODO VARNAME + VARNAMEdesc WILL AUTO POPULATE DOCUMENTATION AND ARGFILES.
 	# TODO PARTIAL, NOT QUITE COMPLETE
 	###############################################################################
-
-	# DECLARE ASSOCIATIVE GLOBAL ARRAY, ESSENTIALLY DICTIONARY FROM PYTHON LAND
-	declare -A -g TVARS
 
 	####################* SPECIALLY HANDLED VARS THAT HAVE ADDITIONAL PROCS ##############
 
@@ -536,114 +610,10 @@ ARGFile_TemplateVariables() {
 
 	####################* END SPECIALLY HANDLED VARS THAT HAVE ADDITIONAL PROCS ##############
 
-	TVARS["ADDTAG_IMAGEHASH"]="$(echo -e "-api\nImageHashType=$_hashALGO_\n-XMP:OriginalImageHash<ImageDataHash")"
-	TVARS["ADDTAG_IMAGEHASHdesc"]="#* Creates imagehash tag."
-
-	TVARS["ADDTAG_PRESERVEDFILENAMEdesc"]="#* Adds the PreservedFileName tag."
-	TVARS["ADDTAG_PRESERVEDFILENAME"]="-XMP-xmpMM:PreservedFileName<filename"
-
-	TVARS["ANDROIDMANUFACTURER"]='${Keys:AndroidManufacturer;$_="[$_]"}'
-	TVARS["ANDROIDMANUFACTURERdesc"]="#* Manufacturer"
-
-	TVARS["ANDROIDMODEL"]='${Keys:AndroidModel;$_="[$_]"}'
-	TVARS["ANDROIDMODELdesc"]="#* Model of android phone."
-
-	TVARS["COUNTER"]='%+3c'
-	TVARS["COUNTERdesc"]="#* Counter (Filename collision avoidance.)"
-
-	TVARS["DDATEFORMAT"]="$(echo -e "-d\n%Y-%m-%d_%H.%M.%S__")"
-	TVARS["DDATEFORMATdesc"]="#* (Prefer per dir option) -d/-dateFormat - Format for date/time values"
-
-	TVARS["DIRSTARTdesc"]="#* Directory output destination start command."
-	TVARS["DIRSTART"]="-Directory<"
-
-	TVARS["DSTDIR"]="$_DSTDIR_"
-	TVARS["DSTDIRdesc"]="#* DESTINATION DIRECTORY: OUTPUT directory for processed and renamed images"
-
-	TVARS["EXTdesc"]="#* File Extension"
-	TVARS["EXT"]='%e'
-
-	TVARS["EXTLIST"]="$_EXTList_"
-	TVARS["EXTLISTdesc"]="#* Extensions to work on"
-
-	TVARS["FILEORDERFILENAME"]="$(echo -e "-fileOrder\n-FileName")"
-	TVARS["FILEORDERFILENAMEdesc"]="#* Process in order of filename. Slow, dont use if possible."
-
-	TVARS["FNAMESTARTdesc"]="#* Rename/move starting with SmartDate function included in the config that came with this script."
-	TVARS["FNAMESTART"]='-filename<'
-
-	TVARS["GETTAGSFROMCURRENTFILE"]="$(echo -e "-tagsfromfile\n@")"
-	TVARS["GETTAGSFROMCURRENTFILEdesc"]="#* GETS / SETS TAGS FROM CURRENT FILE "
-
-	TVARS["HASHALGORITHM"]="$_hashALGO_"
-	TVARS["HASHALGORITHMdesc"]="#* Algorithm for creating the XMP:OriginalImageHash tag."
-
-	TVARS["IMAGESIZE"]='${ImageSize;$_="[$_]"}'
-	TVARS["IMAGESIZEdesc"]="#* Image Size composite tag"
-
-	TVARS["MAKE"]='${Make;$_="[$_]"}'
-	TVARS["MAKEdesc"]="#* Make of Android phone tag."
-
-	TVARS["MODEL"]='${Model;$_="[$_]"}'
-	TVARS["MODELdesc"]="#* Model of camera/phone"
-
-	TVARS["NOEXIFDESTdesc"]="#* FOLDER NAME FOR NOEXIF DESTINATION DIRECTORY: OUTPUT directory for items without EXIF."
-	TVARS["NOEXIFDEST"]="NO-EXIF"
-
-	TVARS["NOXMP"]="$(echo -e "--ext\nxmp")"
-	TVARS["NOXMPdesc"]="#* DO NOT WORK ON XMP FILES # Don't process xmp files, strangely enough used mostly to process xmp files.. lol.. "
-
-	TVARS["PRESERVEdesc"]="#* (-P / -preserve) Preserve file modification date/time"
-	TVARS["PRESERVE"]="-P"
-
-	TVARS["QUIET"]="$(echo -e "-q")"
-	TVARS["QUIETdesc"]="#* Quieter output, put twice for very quiet. shhbbyisok"
-
-	TVARS["RECURSE"]="$_RECURSE_"
-	TVARS["RECURSEdesc"]="#* Recurse. If recurse switch set, this will be -r, otherwise null/empty. "
-
-	TVARS["SDATEFULL"]='${SmartDate;DateFmt("%Y-%m-%d_%H.%M.%S__")}'
-	TVARS["SDATEFULLdesc"]="#* 2020-10-02_14.01.31__ SmartDate full output, used for filename usually."
-
-	TVARS["SHHBBYISOK"]="$(echo -e "-m\n-q\n-q")"
-	TVARS["SHHBBYISOKdesc"]="#* -m -q -q Supress minor errors and super quiet shortcut tag."
-
-	TVARS["SRCDIR"]="$_SRCDIR_"
-	TVARS["SRCDIRdesc"]="#* SOURCE DIRECTORY: INPUT directory containing unprocessed media."
-
-	TVARS["SRCFILE_EXT_XMP"]="$(echo -e "-srcfile\n%d%f.%e.xmp")"
-	TVARS["SRCFILE_EXT_XMPdesc"]="#* DIRECT ACTIONS TO FILENAME.EXT.XMP THIS FILE INSTEAD OF CURRENT FILE"
-
-	TVARS["SRCFILE_XMP"]="$(echo -e "-srcfile\n%d%f.xmp")"
-	TVARS["SRCFILE_XMPdesc"]="#* DIRECT ACTIONS TO FILENAME.XMP THIS FILE INSTEAD OF CURRENT FILE"
-
-	TVARS["SUPRESSMINERRdesc"]="#* Suppress minor errors, if used, must be used equally (or none) on XMP + media argfiles. Otherwise problems."
-	TVARS["SUPRESSMINERR"]="-m"
-
-	TVARS["WRITEMODE_CREATE_INSERTMISSING"]="$(echo -e "-wm\ncg")"
-	TVARS["WRITEMODE_CREATE_INSERTMISSINGdesc"]="#* write mode CREATE AND ADD ONLY NEW TAGS "
-
-	TVARS["XIAOMIPRODUCTNAME"]='${Keys:XiaomiProductMarketname;$_="[$_]"}'
-	TVARS["XIAOMIPRODUCTNAMEdesc"]="#* Phone name tag from Xiaomi"
-
-	TVARS["YEAR"]='${SmartDate;DateFmt("%Y")}'
-	TVARS["YEARdesc"]="#* YEAR Folder"
-
-	TVARS["YEARMONTH"]='${SmartDate;DateFmt("%Y.%m-[%B]")}'
-	TVARS["YEARMONTHdesc"]="#* SmartDate function located in config"
-
-	#! ITERATE THROUGH KEY, VALUE PAIR, ASSIGN TO A STRING AND EVAL IT
-	#! REGISTERING IT AS A REGULAR SCRIPT VARIABLE FOR WITHIN THIS SCRIPT
-	#! Create the key=value and register it from the associated array/dict.
-	for KEY in "${!TVARS[@]}"; do
-		regVAR="${KEY}='${TVARS[${KEY}]}'"
-		#eval "$regVAR"
-	done
 
 }
 ARGFile_TemplateVariables
 ###############################################################################
-
 
 ###############################################################################
 GenerateArgfile() {
@@ -700,7 +670,10 @@ GenerateArgfile() {
 	done
 
 	# Strip blank lines and lines starting with # (comments)
-	grep -o '^[^#]*' "$ARGFile_Template" >"$ARGFILE_STRIPPED"
+	#grep -o '^[^#]*' "$ARGFile_Template" >"$ARGFILE_STRIPPED"
+	# Improved grep below
+	grep -Ev "^#|^$" "$ARGFile_Template" >"$ARGFILE_STRIPPED"
+
 	#! Strip tabs and whitespace
 	sed -i 's/[[:blank:]]*$//' "$ARGFILE_STRIPPED"
 
@@ -726,7 +699,6 @@ GenerateArgfile() {
 
 }
 ###############################################################################
-
 
 ###############################################################################
 resetTESTData() {
@@ -789,7 +761,6 @@ beginPhotoVideoSort() {
 }
 ###############################################################################
 
-
 ###############################################################################
 tempFileCLEANUP() {
 
@@ -800,6 +771,11 @@ tempFileCLEANUP() {
 	local cleanTIMER=$1
 
 	echo -e "Removing temporary files in $cleanTIMER seconds, Ctrl-C to preserve"
+	for FILE in "${FilesToCleanup[@]}"; do
+
+		echo "$FILE"
+
+	done
 	sleep $cleanTIMER
 
 	for FILE in "${FilesToCleanup[@]}"; do
@@ -811,7 +787,6 @@ tempFileCLEANUP() {
 
 }
 ###############################################################################
-
 
 ###############################################################################
 fixd_format_log_entry() {
@@ -841,8 +816,6 @@ fixd_format_log_entry() {
 		"$RCol"
 }
 ###############################################################################
-
-
 
 ###############################################################################
 #! #### END OF FUNCTION DEFINITIONS  ##########################################
