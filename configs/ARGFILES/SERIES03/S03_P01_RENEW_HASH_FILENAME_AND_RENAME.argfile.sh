@@ -2,13 +2,173 @@
 # shellcheck disable=all
 # exiftool argfile
 ###############################################################################
-#! 	TITLE: TEMPLATE_S01-P01_MIGRATE-XMP-TO-EXT.XMP.argfile.sh
-#! 	VERSION:  20260222.001
-# 	DESCRIPTION: Renames image.xmp files to image.ext.xmp adds hash + origin filename
+#* 	TITLE: RESET ORIGINAL FILENAME AND HASH  AND RENAME XMP TO .EXT.XMP
+#! 	VERSION:  20260311.001
+#* 	DESCRIPTION: OVERWRITES in XMP sidecar the tags  XMP-xmpMM:PreservedFileName,
+#*  XMP-getty:OriginalFilename with current filename, renames sidecar to .ext.xmp
+#*  and adds ONLY if missing  XMP:OriginalImageHash to XMP
 #! 	STATUS: OK
-# 	COMMENT: This causes errors for files missing xmp
+# 	COMMENT: 
+#######################################################################
+
 ###############################################################################
 ###############################################################################
+###############################################################################
+#FORCE OVERWRITES SPECIFIC TAGS & SAVES SIDECAR TO EXT.XMP IF SIDECAR IS NAMED FILENAME.EXT.XMP
+$_ZSTART_
+$_Z_SETTINGS_PROTO_
+-echo
+"CREATE SIDECAR IF DOES NOT EXIST OR UPDATE IF IT DOES  CAN'T RENAME FILE.XMP TO FILE.EXT.XMP IN THIS STEP DUE TO BUG"
+# #-------------------------------------------------------------------------------
+
+#! EZ_SETTINGS_PROTO=$_VERBOSE_, $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
+# #-------------------------------------------------------------------------------
+$_FIXD_NAME_TEMPLATE_A_
+$_VERBOSE_
+# $_SUPRESSMINERR_
+# $_PRESERVE_
+# $_EXTLIST_
+# $_NOXMP_
+# $_GETTAGSFROMCURRENTFILE_
+#-overwrite_original
+
+$_SRCFILE_EXT_XMP_
+$_SRCFILE_XMP_
+
+#* 	OVERWRITE XMP sidecar tags XMP-xmpMM:PreservedFileName, XMP-getty:OriginalFilename
+$_ADDTAG_PRESERVEDFILENAME_
+-XMP-getty:OriginalFilename<filename
+
+
+#$_FNAMESTART_$basename$_COUNTER_.$_EXT_.xmp
+
+# #-o
+# #%d%f$_COUNTER_.%e.xmp
+# # OUTPUT FILENAME
+# $_RECURSE_
+# $_SRCDIR_
+
+# -execute
+# # RUN EVERYTHING UP TO THIS POINT AS A SPECIFIC COMMANDSET.
+
+# #-------------------------------------------------------------------------------
+$_EZ_SETTINGS_META_
+#! EZ_SETTINGS_META=$_RECURSE_, $_SRCDIR_, $_EXECUTE_
+# #-------------------------------------------------------------------------------
+
+
+
+
+
+
+# ##########################################################################################
+# # -------------------------------------------------------
+
+# FORCE OVERWRITES SOME SPECIFIC TAGS & SAVES SIDECAR TO FILENAME.EXT.XMP IF SIDECAR IS NAMED FILENAME.XMP
+# Tests: 
+# No XMP, create OK!
+# Name wrong, saves OK!
+
+
+# #-------------------------------------------------------------------------------
+$_EZ_SETTINGS_PROTO_
+#! EZ_SETTINGS_PROTO=$_VERBOSE_, $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
+# #-------------------------------------------------------------------------------
+
+-echo
+"RENAMES FILE.XMP TO FILE.EXT.XMP"
+
+# $_VERBOSE_
+# $_SUPRESSMINERR_
+# $_PRESERVE_
+# $_EXTLIST_
+# $_NOXMP_
+#$_GETTAGSFROMCURRENTFILE_
+
+$_SRCFILE_XMP_
+
+#$_WRITEMODE_CREATE_INSERTMISSING_
+
+$_FNAMESTART_$basename$_COUNTER_.$_EXT_.xmp
+#-o
+#%d%f$_COUNTER_.%e.xmp
+
+# $_RECURSE_
+# $_SRCDIR_
+
+# -execute
+
+# #-------------------------------------------------------------------------------
+$_EZ_SETTINGS_META_
+#! EZ_SETTINGS_META=$_RECURSE_, $_SRCDIR_, $_EXECUTE_
+# #-------------------------------------------------------------------------------
+# #-----------------------------------------
+
+
+# #-------------------------------------------------------------------------------
+$_EZ_SETTINGS_PROTO_
+#! EZ_SETTINGS_PROTO=$_VERBOSE_, $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
+# #-------------------------------------------------------------------------------
+
+# $_VERBOSE_
+# $_SUPRESSMINERR_
+# $_PRESERVE_
+# $_EXTLIST_
+# $_NOXMP_
+# -overwrite_original
+# $_GETTAGSFROMCURRENTFILE_
+
+
+
+$_SRCFILE_EXT_XMP_
+$_SRCFILE_XMP_
+
+
+#$_WRITEMODE_CREATE_INSERTMISSING_
+# -wm cg to only create new tags (and avoid editing existing ones)
+
+# HRM...DOESNT SEEM TO CREATE A XMP IF MISSING.
+
+# The default write mode is wcg.
+
+# w - Write existing tags
+# c - Create new tags
+# g - create new Groups as necessary
+# For example, use -wm cg to only create new tags (and avoid editing existing ones).
+
+
+#* ADD CHECKSUM IF MISSING
+$_ADDTAG_IMAGEHASH_
+
+#* ADD MISSING TAGS FROM EACH BELOW.
+
+-all
+-all:all
+-xmp:all
+-exif:all
+-composite:all
+-quicktime:all
+-iptc:all
+-gps:all
+
+
+#$_FNAMESTART_$basename$_COUNTER_.$_EXT_.xmp
+#-o
+#%d%f$_COUNTER_.%e.xmp
+
+
+
+# $_RECURSE_
+# $_SRCDIR_
+
+# -execute
+
+# #-------------------------------------------------------------------------------
+$_EZ_SETTINGS_META_
+#! EZ_SETTINGS_META=$_RECURSE_, $_SRCDIR_, $_EXECUTE_
+# #-------------------------------------------------------------------------------
+#############################################################################################
+####################################################################################################
 # $_ADDTAG_IMAGEHASH_                    [ -api ImageHashType=SHA512 -XMP:OriginalImageHash<ImageDataHash ]
 # $_ADDTAG_IMAGEHASHdesc_                [ #* Creates imagehash tag. ]
 # $_ADDTAG_PRESERVEDFILENAMEdesc_        [ #* Adds the PreservedFileName tag. ]
@@ -78,61 +238,3 @@
 # $_YEARMONTH_                           [ ${SmartDate;DateFmt("%Y.%m-[%B]")} ]
 # $_YEARMONTHdesc_                       [ #* SmartDate function located in config ]
 ###############################################################################
-###############################################################################
-###############################################################################
-# WORKFLOW 1 - STEP 0 - RENAME EXISTING SIDECARS FROM IMAGE.XMP TO IMAGE.EXT.XMP
-# DOES NOT CREATE MISSING XMP SIDECARS
-###############################################################################
-###############################################################################
-###############################################################################
-
-$_VERBOSE_
-# Verbose
-
-$_SUPRESSMINERR_
-# IGNORE MINOR ERRORS (CAN CHANGE THE SORTING/DESTINATION FOLDER IF TAGS WERE SKIPPED WITHOUT THIS)
-
-$_PRESERVE_
-# (-P / -preserve) Preserve file modification date/time
-
-$_QUIET_
-$_QUIET_
-# Quieter output, put twice for very quiet. shhbbyisok
-
-$_EXTLIST_
-# WORK ON THESE FILES Extensions list
-
-$_NOXMP_
-# DO NOT WORK ON XMP FILES
-
-$_WRITEMODE_CREATE_INSERTMISSING_
-# write mode CREATE AND ADD ONLY NEW TAGS
-
-$_SRCFILE_XMP_
-#-srcfile\n%d%f.xmp
-# DIRECT ACTIONS TO THIS FILE INSTEAD OF CURRENT FILE
-
--overwrite_original
-
-$_GETTAGSFROMCURRENTFILE_
-
-$_ADDTAG_PRESERVEDFILENAME_
-
-$_ADDTAG_IMAGEHASH_
-
--all
-
-#-filename<$basename%+3c.%e.xmp
-$_FNAMESTART_$basename$_COUNTER_$_EXT_.xmp
-# OUTPUT FILENAME
-
-$_RECURSE_
-# Recurse. If recurse switch set, this will be -r, otherwise null/empty.
-
-$_SRCDIR_
-# SOURCE DIRECTORY: INPUT directory containing unprocessed media."
-
--execute
-# RUN EVERYTHING UP TO THIS POINT AS A SPECIFIC COMMANDSET.
-
-#-------------------------------------------------------------------------------

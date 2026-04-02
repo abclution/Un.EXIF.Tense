@@ -3,3 +3,4 @@ test-out
 un-EXIF-tense.sh.BACKUP
 test-main.sh
 test-in
+.gitignore

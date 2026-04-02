@@ -2,11 +2,11 @@
 # shellcheck disable=all
 # exiftool argfile
 ###############################################################################
-#! 	TITLE: TEMPLATE_S01-P02_CREATE.XMP.argfile.sh
-#! 	VERSION: 20260222.001
-# 	DESCRIPTION:
+#! 	TITLE: TEMPLATE_S01-P01_MIGRATE-XMP-TO-EXT.XMP.argfile.sh
+#! 	VERSION:  20260222.001
+# 	DESCRIPTION: Renames image.xmp files to image.ext.xmp adds hash + origin filename
 #! 	STATUS: OK
-# 	COMMENT:
+# 	COMMENT: This causes errors for files missing xmp
 ###############################################################################
 ###############################################################################
 # $_ADDTAG_IMAGEHASH_                    [ -api ImageHashType=SHA512 -XMP:OriginalImageHash<ImageDataHash ]
@@ -78,47 +78,51 @@
 # $_YEARMONTH_                           [ ${SmartDate;DateFmt("%Y.%m-[%B]")} ]
 # $_YEARMONTHdesc_                       [ #* SmartDate function located in config ]
 ###############################################################################
-#0 Rename sidecars that are of style imagename.xmp to imagename.ext.xmp
-#1 Generate XMP
-#2 MOVE XMP
-#3 MOVE MEDIA
-
-# 1 WORKIN CONFIG FOR XMP CREATION
-# Fills in the blanks, does not overwrite existing.
-# Hash generation is only for cerrtain filetypes
 ###############################################################################
+###############################################################################
+# WORKFLOW 1 - STEP 0 - RENAME EXISTING SIDECARS FROM IMAGE.XMP TO IMAGE.EXT.XMP
+# DOES NOT CREATE MISSING XMP SIDECARS
+###############################################################################
+###############################################################################
+###############################################################################
+# "EZ_SETTINGS_PROTO"="$(echo -e "$_VERBOSE_\n$_SUPRESSMINERR_\n$_PRESERVE_\n$_QUIET_\n$_QUIET_\n$_EXTLIST_\n$_NOXMP_\n$_GETTAGSFROMCURRENTFILE_\n$_WRITEOVERFILE_")"
+# "EZ_SETTINGS_META"="$(echo -e "$_RECURSE_\n$_SRCDIR_\n$_EXECUTE_")"
+# "FIXD_NAME_TEMPLATE_A"="(echo -e "$_FNAMESTART_$_SDATEFULL_$_IMAGESIZE_$_KEEPNAME_$_COUNTER_.$_EXT_")"
+# "FIXD_DIR_TEMPLATE_A"="(echo -e "$_DIRSTART_$_DSTDIR_/$_MAKE_$_ANDROIDMANUFACTURER_$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_/$_EXT_/$_YEARMONTH_")"
+# "WRITEOVERFILE"="-overwrite_original"
+#-------------------------------------------------------------------------------
+$_EZ_SETTINGS_PROTO_
+#-------------------------------------------------------------------------------
+# $_VERBOSE_
+# # Verbose
+# $_SUPRESSMINERR_
+# # IGNORE MINOR ERRORS (CAN CHANGE THE SORTING/DESTINATION FOLDER IF TAGS WERE SKIPPED WITHOUT THIS)
 
-$_VERBOSE_
-# Verbose
+# $_PRESERVE_
+# # (-P / -preserve) Preserve file modification date/time
 
-$_SUPRESSMINERR_
-# IGNORE MINOR ERRORS (CAN CHANGE THE SORTING/DESTINATION FOLDER IF TAGS WERE SKIPPED WITHOUT THIS)
+# $_QUIET_
+# $_QUIET_
+# # Quieter output, put twice for very quiet. shhbbyisok
 
-$_PRESERVE_
-# (-P / -preserve) Preserve file modification date/time
+# $_EXTLIST_
+# # WORK ON THESE FILES Extensions list
 
-$_QUIET_
-$_QUIET_
-# Quieter output, put twice for very quiet. shhbbyisok
+# $_NOXMP_
+# # DO NOT WORK ON XMP FILES
 
-$_EXTLIST_
-# WORK ON THESE FILES Extensions list
+# -overwrite_original
 
-$_NOXMP_
-# DO NOT WORK ON XMP FILES
+# $_GETTAGSFROMCURRENTFILE_
+#--------------- Up to here commented switches covered by $_EZ_SETTINGS_PROTO_
 
 $_WRITEMODE_CREATE_INSERTMISSING_
 # write mode CREATE AND ADD ONLY NEW TAGS
 
-#-srcfile
-#%d%f.%e.xmp
+$_SRCFILE_XMP_
+#-srcfile\n%d%f.xmp
+# DIRECT ACTIONS TO THIS FILE INSTEAD OF CURRENT FILE
 
-$_SRCFILE_EXT_XMP_
-
-
--overwrite_original
-
-$_GETTAGSFROMCURRENTFILE_
 
 $_ADDTAG_PRESERVEDFILENAME_
 
@@ -126,13 +130,36 @@ $_ADDTAG_IMAGEHASH_
 
 -all
 
-$_RECURSE_
+#-filename<$basename%+3c.%e.xmp
+$_FNAMESTART_$basename$_COUNTER_$_EXT_.xmp
+# OUTPUT FILENAME
 
-# Recurse. If recurse switch set, this will be -r, otherwise null/empty.
+# $_RECURSE_
+# # Recurse. If recurse switch set, this will be -r, otherwise null/empty.
 
-$_SRCDIR_
-# SOURCE DIRECTORY: INPUT directory containing unprocessed media."
+# $_SRCDIR_
+# # SOURCE DIRECTORY: INPUT directory containing unprocessed media."
 
--execute
+# -execute
+# # RUN EVERYTHING UP TO THIS POINT AS A SPECIFIC COMMANDSET.
 
+#-------------------------------------------------------------------------------
+
+
+
+
+# #-------------------------------------------------------------------------------
+#* $_EZ_SETTINGS_PROTO_
+#! EZ_SETTINGS_PROTO=$_VERBOSE_, $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
+# #-------------------------------------------------------------------------------
+#* $_FIXD_NAME_TEMPLATE_A_
+#! FIXD_NAME_TEMPLATE_A = $_FNAMESTART_$_SDATEFULL_$_IMAGESIZE_$_KEEPNAME_$_COUNTER_.$_EXT_
+
+#* $_FIXD_DIR_TEMPLATE_A_
+#! FIXD_DIR_TEMPLATE_A = $_DIRSTART_$_DSTDIR_/$_MAKE_$_ANDROIDMANUFACTURER_$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_/$_EXT_/$_YEARMONTH_
+
+# #-------------------------------------------------------------------------------
+#* $_EZ_SETTINGS_META_
+#! EZ_SETTINGS_META=$_RECURSE_, $_SRCDIR_, $_EXECUTE_
+# #-------------------------------------------------------------------------------
 
