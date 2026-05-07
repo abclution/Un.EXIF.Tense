@@ -64,6 +64,9 @@
         "activityBar.inactiveForeground": "#f5b5b5",
         "sideBar.background": "#8f2626",
         "sideBar.foreground": "#e0e0e0",
-        "sideBarTitle.foreground": "#ffffff"
+        "sideBarTitle.foreground": "#ffffff",
+        "statusBar.background": "#7f1d1d",
+        "statusBar.foreground": "#ffffff",
+        "statusBar.noFolderBackground": "#7f1d1d"
     }
 }

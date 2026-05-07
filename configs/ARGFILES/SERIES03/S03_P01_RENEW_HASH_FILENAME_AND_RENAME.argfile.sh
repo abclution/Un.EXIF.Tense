@@ -10,124 +10,126 @@
 #! 	STATUS: OK
 # 	COMMENT: 
 #######################################################################
+# $_ZSTART_
+# $_Z_SETTINGS_PROTO_
+###############################################################################
 
-###############################################################################
-###############################################################################
-###############################################################################
-#FORCE OVERWRITES SPECIFIC TAGS & SAVES SIDECAR TO EXT.XMP IF SIDECAR IS NAMED FILENAME.EXT.XMP
-$_ZSTART_
-$_Z_SETTINGS_PROTO_
+## DESCRIPTION -----------------------------------------------------------------------------
 -echo
-"CREATE SIDECAR IF DOES NOT EXIST OR UPDATE IF IT DOES  CAN'T RENAME FILE.XMP TO FILE.EXT.XMP IN THIS STEP DUE TO BUG"
-# #-------------------------------------------------------------------------------
+'FORCE OVERWRITES SPECIFIC TAGS & SAVES SIDECAR TO EXT.XMP IF SIDECAR IS NAMED FILENAME.EXT.XMP'
 
-#! EZ_SETTINGS_PROTO=$_VERBOSE_, $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
-# #-------------------------------------------------------------------------------
-$_FIXD_NAME_TEMPLATE_A_
+
+-echo
+'CREATES SIDECAR IF DOES NOT EXIST OR UPDATE IF IT DOES.'
+
+
+-echo
+'CANT RENAME FILE.XMP TO FILE.EXT.XMP IN THIS STEP DUE TO BUG IN SPECIFIC EXIFTOOL FLAG BUT I CANT REMEMEBER WHICH'
+# TODO ID THIS BUG AGAIN LATER AND REPORT
+#  -----------------------------------------------------------------------------
+
 $_VERBOSE_
-# $_SUPRESSMINERR_
-# $_PRESERVE_
-# $_EXTLIST_
-# $_NOXMP_
-# $_GETTAGSFROMCURRENTFILE_
-#-overwrite_original
+#  -----------------------------------------------------------------------------
+
+$_EZ_SETTINGS_PROTO_
+# * [[EZ_SETTINGS_PROTO]]  $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
+#  -----------------------------------------------------------------------------
+
+$_FIXD_NAME_TEMPLATE_A_
+#* $_FNAMESTART_$_SDATEFULL_$_IMAGESIZE_$_KEEPNAME_$_COUNTER_.$_EXT_
+#  -----------------------------------------------------------------------------
+
 
 $_SRCFILE_EXT_XMP_
 $_SRCFILE_XMP_
+#* LIST POSSIBLE SRCFILES, MULTIPLE OK, WORKS ON FIRST FOUND IIRC
+#  -----------------------------------------------------------------------------
 
-#* 	OVERWRITE XMP sidecar tags XMP-xmpMM:PreservedFileName, XMP-getty:OriginalFilename
+
 $_ADDTAG_PRESERVEDFILENAME_
--XMP-getty:OriginalFilename<filename
+$_ADDTAG_ORIGINALFILENAME_
+#* 	OVERWRITE/ADDS XMP sidecar tags XMP-xmpMM:PreservedFileName, XMP-getty:OriginalFilename
+#  -----------------------------------------------------------------------------
 
 
-#$_FNAMESTART_$basename$_COUNTER_.$_EXT_.xmp
-
-# #-o
-# #%d%f$_COUNTER_.%e.xmp
-# # OUTPUT FILENAME
-# $_RECURSE_
-# $_SRCDIR_
-
-# -execute
-# # RUN EVERYTHING UP TO THIS POINT AS A SPECIFIC COMMANDSET.
-
-# #-------------------------------------------------------------------------------
+$_RECURSE_
 $_EZ_SETTINGS_META_
-#! EZ_SETTINGS_META=$_RECURSE_, $_SRCDIR_, $_EXECUTE_
-# #-------------------------------------------------------------------------------
+#* [EZ_SETTINGS_META =  $_SRCDIR_, $_EXECUTE_]
+#  -----------------------------------------------------------------------------
 
 
 
 
 
 
-# ##########################################################################################
-# # -------------------------------------------------------
 
-# FORCE OVERWRITES SOME SPECIFIC TAGS & SAVES SIDECAR TO FILENAME.EXT.XMP IF SIDECAR IS NAMED FILENAME.XMP
+# ####################################################################
+#~  ONLY RENAMES SIDECAR.XMP TO SIDECAR.EXT.XMP
 # Tests: 
 # No XMP, create OK!
 # Name wrong, saves OK!
+# ####################################################################
 
-
-# #-------------------------------------------------------------------------------
-$_EZ_SETTINGS_PROTO_
-#! EZ_SETTINGS_PROTO=$_VERBOSE_, $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
-# #-------------------------------------------------------------------------------
+ 
 
 -echo
-"RENAMES FILE.XMP TO FILE.EXT.XMP"
-
-# $_VERBOSE_
-# $_SUPRESSMINERR_
-# $_PRESERVE_
-# $_EXTLIST_
-# $_NOXMP_
-#$_GETTAGSFROMCURRENTFILE_
-
-$_SRCFILE_XMP_
-
-#$_WRITEMODE_CREATE_INSERTMISSING_
-
-$_FNAMESTART_$basename$_COUNTER_.$_EXT_.xmp
-#-o
-#%d%f$_COUNTER_.%e.xmp
-
-# $_RECURSE_
-# $_SRCDIR_
-
-# -execute
-
-# #-------------------------------------------------------------------------------
-$_EZ_SETTINGS_META_
-#! EZ_SETTINGS_META=$_RECURSE_, $_SRCDIR_, $_EXECUTE_
-# #-------------------------------------------------------------------------------
-# #-----------------------------------------
-
-
-# #-------------------------------------------------------------------------------
+'RENAMES SIDECAR.XMP TO SIDECAR.EXT.XMP'
+#  -----------------------------------------------------------------------------
+$_VERBOSE_
+#  -----------------------------------------------------------------------------
 $_EZ_SETTINGS_PROTO_
-#! EZ_SETTINGS_PROTO=$_VERBOSE_, $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
-# #-------------------------------------------------------------------------------
+# * [[EZ_SETTINGS_PROTO]]  $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
+#  -----------------------------------------------------------------------------
+$_SRCFILE_XMP_
+#* LIST POSSIBLE SRCFILES, MULTIPLE OK, WORKS ON FIRST FOUND IIRC
+#  -----------------------------------------------------------------------------
+$_FNAMESTART_$basename$_COUNTER_.$_EXT_.xmp
+#  -----------------------------------------------------------------------------
+$_RECURSE_
+$_EZ_SETTINGS_META_
+#* [EZ_SETTINGS_META =  $_SRCDIR_, $_EXECUTE_]
+#  -----------------------------------------------------------------------------
 
-# $_VERBOSE_
-# $_SUPRESSMINERR_
-# $_PRESERVE_
-# $_EXTLIST_
-# $_NOXMP_
-# -overwrite_original
-# $_GETTAGSFROMCURRENTFILE_
 
+
+
+
+
+
+
+
+
+
+
+# ####################################################################
+#~ 
+# Tests: 
+#!  - No XMP, create OK!
+#!  - Name wrong, saves OK!
+#!  - # HRM...DOESNT SEEM TO CREATE A XMP IF MISSING.
+ 
+#!  - 
+# 
+# 
+# ####################################################################
+
+
+
+#  -----------------------------------------------------------------------------
+$_VERBOSE_
+#  -----------------------------------------------------------------------------
+$_EZ_SETTINGS_PROTO_
+# * [[EZ_SETTINGS_PROTO]]  $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
+#  -----------------------------------------------------------------------------
 
 
 $_SRCFILE_EXT_XMP_
 $_SRCFILE_XMP_
-
-
+#  -----------------------------------------------------------------------------
+$_WRITEMODE_CREATE_INSERTMISSING_
 #$_WRITEMODE_CREATE_INSERTMISSING_
 # -wm cg to only create new tags (and avoid editing existing ones)
 
-# HRM...DOESNT SEEM TO CREATE A XMP IF MISSING.
 
 # The default write mode is wcg.
 
@@ -135,13 +137,10 @@ $_SRCFILE_XMP_
 # c - Create new tags
 # g - create new Groups as necessary
 # For example, use -wm cg to only create new tags (and avoid editing existing ones).
-
-
-#* ADD CHECKSUM IF MISSING
+#  -----------------------------------------------------------------------------
 $_ADDTAG_IMAGEHASH_
-
-#* ADD MISSING TAGS FROM EACH BELOW.
-
+#* ADD CHECKSUM IF MISSING
+#  -----------------------------------------------------------------------------
 -all
 -all:all
 -xmp:all
@@ -150,7 +149,8 @@ $_ADDTAG_IMAGEHASH_
 -quicktime:all
 -iptc:all
 -gps:all
-
+#* ADD MISSING TAGS FROM EACH 
+#  -----------------------------------------------------------------------------
 
 #$_FNAMESTART_$basename$_COUNTER_.$_EXT_.xmp
 #-o
@@ -158,83 +158,7 @@ $_ADDTAG_IMAGEHASH_
 
 
 
-# $_RECURSE_
-# $_SRCDIR_
-
-# -execute
-
-# #-------------------------------------------------------------------------------
+$_RECURSE_
 $_EZ_SETTINGS_META_
-#! EZ_SETTINGS_META=$_RECURSE_, $_SRCDIR_, $_EXECUTE_
-# #-------------------------------------------------------------------------------
-#############################################################################################
-####################################################################################################
-# $_ADDTAG_IMAGEHASH_                    [ -api ImageHashType=SHA512 -XMP:OriginalImageHash<ImageDataHash ]
-# $_ADDTAG_IMAGEHASHdesc_                [ #* Creates imagehash tag. ]
-# $_ADDTAG_PRESERVEDFILENAMEdesc_        [ #* Adds the PreservedFileName tag. ]
-# $_ADDTAG_PRESERVEDFILENAME_            [ -XMP-xmpMM:PreservedFileName<filename ]
-# $_ANDROIDMANUFACTURER_                 [ ${Keys:AndroidManufacturer;$_="[$_]"} ]
-# $_ANDROIDMANUFACTURERdesc_             [ #* Manufacturer ]
-# $_ANDROIDMODEL_                        [ ${Keys:AndroidModel;$_="[$_]"} ]
-# $_ANDROIDMODELdesc_                    [ #* Model of android phone. ]
-# $_COUNTER_                             [ %+3c ]
-# $_COUNTERdesc_                         [ #* Counter (Filename collision avoidance.) ]
-# $_DDATEFORMATdesc_                     [ #* (Prefer per dir option) -d/-dateFormat - Format for date/time values ]
-# $_DDATEFORMAT_                         [ -d %Y-%m-%d_%H.%M.%S__ ]
-# $_DIRSTARTdesc_                        [ #* Directory output destination start command. ]
-# $_DIRSTART_                            [ -Directory< ]
-# $_DSTDIRdesc_                          [ #* DESTINATION DIRECTORY: OUTPUT directory for processed and renamed images ]
-# $_DSTDIR_                              [ /zpool_20tb/eVAULT/GALLERY/zTESTFILES/TEST_OUT ]
-# $_EXTdesc_                             [ #* File Extension ]
-# $_EXT_                                 [ %e ]
-# $_EXTLISTdesc_                         [ #* Extensions to work on ]
-# $_EXTLIST_                             [ -ext mov -ext mp4 -ext mpg -ext 3gp -ext wmv -ext webm -ext avi -ext m4v -ext webp -ext dng -ext jpg -ext heic -ext png -ext gif -ext bmp -ext tiff ...
-# $_FILEORDERFILENAMEdesc_               [ #* Process in order of filename. Slow, dont use if possible. ]
-# $_FILEORDERFILENAME_                   [ -fileOrder -FileName ]
-# $_FNAMESTARTdesc_                      [ #* Rename/move starting with SmartDate function included in the config that came with this script. ]
-# $_FNAMESTART_                          [ -filename< ]
-# $_GETTAGSFROMCURRENTFILEdesc_          [ #* GETS / SETS TAGS FROM CURRENT FILE  ]
-# $_GETTAGSFROMCURRENTFILE_              [ -tagsfromfile @ ]
-# $_HASHALGORITHMdesc_                   [ #* Algorithm for creating the XMP:OriginalImageHash tag. ]
-# $_HASHALGORITHM_                       [ SHA512 ]
-# $_IMAGESIZE_                           [ ${ImageSize;$_="[$_]"} ]
-# $_IMAGESIZEdesc_                       [ #* Image Size composite tag ]
-# $_KEEPNAME_                            [  ]
-# $_KEEPNAMEdesc_                        [  ]
-# $_MAKE_                                [ ${Make;$_="[$_]"} ]
-# $_MAKEdesc_                            [ #* Make of Android phone tag. ]
-# $_MODEL_                               [ ${Model;$_="[$_]"} ]
-# $_MODELdesc_                           [ #* Model of camera/phone ]
-# $_NOEXIFDESTdesc_                      [ #* FOLDER NAME FOR NOEXIF DESTINATION DIRECTORY: OUTPUT directory for items without EXIF. ]
-# $_NOEXIFDEST_                          [ NO-EXIF ]
-# $_NOXMPdesc_                           [ #* DO NOT WORK ON XMP FILES # Don't process xmp files, strangely enough used mostly to process xmp files.. lol..  ]
-# $_NOXMP_                               [ --ext xmp ]
-# $_PRESERVEdesc_                        [ #* (-P / -preserve) Preserve file modification date/time ]
-# $_PRESERVE_                            [ -P ]
-# $_QUIETdesc_                           [ #* Quieter output, put twice for very quiet. shhbbyisok ]
-# $_QUIET_                               [ -q ]
-# $_RECURSEdesc_                         [ #* Recurse. If recurse switch set, this will be -r, otherwise null/empty.  ]
-# $_RECURSE_                             [ -r ]
-# $_SDATEFULL_                           [ ${SmartDate;DateFmt("%Y-%m-%d_%H.%M.%S__")} ]
-# $_SDATEFULLdesc_                       [ #* 2020-10-02_14.01.31__ SmartDate full output, used for filename usually. ]
-# $_SHHBBYISOKdesc_                      [ #* -m -q -q Supress minor errors and super quiet shortcut tag. ]
-# $_SHHBBYISOK_                          [ -m -q -q ]
-# $_SRCDIRdesc_                          [ #* SOURCE DIRECTORY: INPUT directory containing unprocessed media. ]
-# $_SRCDIR_                              [ /zpool_20tb/eVAULT/GALLERY/zTESTFILES/TEST_IN ]
-# $_SRCFILE_EXT_XMPdesc_                 [ #* DIRECT ACTIONS TO FILENAME.EXT.XMP THIS FILE INSTEAD OF CURRENT FILE ]
-# $_SRCFILE_EXT_XMP_                     [ -srcfile %d%f.%e.xmp ]
-# $_SRCFILE_XMPdesc_                     [ #* DIRECT ACTIONS TO FILENAME.XMP THIS FILE INSTEAD OF CURRENT FILE ]
-# $_SRCFILE_XMP_                         [ -srcfile %d%f.xmp ]
-# $_SUPRESSMINERRdesc_                   [ #* Suppress minor errors, if used, must be used equally (or none) on XMP + media argfiles. Otherwise problems. ]
-# $_SUPRESSMINERR_                       [ -m ]
-# $_VERBOSE_                             [  ]
-# $_VERBOSEdesc_                         [ #* When verbose switch set, this will be -v[0...5], 5 being most verbose. Set by VLevel ]
-# $_WRITEMODE_CREATE_INSERTMISSINGdesc_  [ #* write mode CREATE AND ADD ONLY NEW TAGS  ]
-# $_WRITEMODE_CREATE_INSERTMISSING_      [ -wm cg ]
-# $_XIAOMIPRODUCTNAME_                   [ ${Keys:XiaomiProductMarketname;$_="[$_]"} ]
-# $_XIAOMIPRODUCTNAMEdesc_               [ #* Phone name tag from Xiaomi ]
-# $_YEAR_                                [ ${SmartDate;DateFmt("%Y")} ]
-# $_YEARdesc_                            [ #* YEAR Folder ]
-# $_YEARMONTH_                           [ ${SmartDate;DateFmt("%Y.%m-[%B]")} ]
-# $_YEARMONTHdesc_                       [ #* SmartDate function located in config ]
-###############################################################################
+#* [EZ_SETTINGS_META =  $_SRCDIR_, $_EXECUTE_]
+#  -----------------------------------------------------------------------------

@@ -1,0 +1,183 @@
+#!/bin/bash
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+# THIS ARGFILE TEMPLATE IS AUTOMATICALLY GENERATED AND CAN BE USED AS A TEMPLATE STARTING POINT.
+# OR TO TEST AND VALIDATE THAT ALL THE VARLIST ENTRIES ARE PROPERLY SUBSTITUTED
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+$_ADDTAG_IMAGEHASH_
+$_ADDTAG_IMAGEHASHdesc_
+$_ADDTAG_PRESERVEDFILENAMEdesc_
+$_ADDTAG_PRESERVEDFILENAME_
+$_ANDROIDMANUFACTURER_
+$_ANDROIDMANUFACTURERdesc_
+$_ANDROIDMODEL_
+$_ANDROIDMODELdesc_
+$_COUNTER_
+$_COUNTERdesc_
+$_DDATEFORMAT_
+$_DDATEFORMATdesc_
+$_DIRSTARTdesc_
+$_DIRSTART_
+$_DSTDIR_
+$_DSTDIRdesc_
+$_EXECUTEdesc_
+$_EXECUTE_
+$_EXTdesc_
+$_EXT_
+$_EXTLIST_
+$_EXTLISTdesc_
+$_EZ_SETTINGS_META_
+$_EZ_SETTINGS_METAdesc_
+$_EZ_SETTINGS_PROTO_
+$_EZ_SETTINGS_PROTOdesc_
+$_FILEORDERFILENAME_
+$_FILEORDERFILENAMEdesc_
+$_FMTLINE_
+$_FNAMESTARTdesc_
+$_FNAMESTART_
+$_GETTAGSFROMCURRENTFILE_
+$_GETTAGSFROMCURRENTFILEdesc_
+$_HASHALGORITHM_
+$_HASHALGORITHMdesc_
+$_IMAGESIZE_
+$_IMAGESIZEdesc_
+$_KEEPNAME_
+$_KEEPNAMEdesc_
+$_MAKE_
+$_MAKEdesc_
+$_MODEL_
+$_MODELdesc_
+$_NOEXIFDESTdesc_
+$_NOEXIFDEST_
+$_NOXMP_
+$_NOXMPdesc_
+$_PRESERVEdesc_
+$_PRESERVE_
+$_QUIET_
+$_QUIETdesc_
+$_RECURSE_
+$_RECURSEdesc_
+$_SDATEFULL_
+$_SDATEFULLdesc_
+$_SHHBBYISOK_
+$_SHHBBYISOKdesc_
+$_SRCDIR_
+$_SRCDIRdesc_
+$_SRCFILE_EXT_XMP_
+$_SRCFILE_EXT_XMPdesc_
+$_SRCFILE_XMP_
+$_SRCFILE_XMPdesc_
+$_SUPRESSMINERRdesc_
+$_SUPRESSMINERR_
+$_VERBOSE_
+$_VERBOSEdesc_
+$_WRITEMODE_CREATE_INSERTMISSING_
+$_WRITEMODE_CREATE_INSERTMISSINGdesc_
+$_WRITEOVERFILEdesc_
+$_WRITEOVERFILE_
+$_XIAOMIPRODUCTNAME_
+$_XIAOMIPRODUCTNAMEdesc_
+$_YEAR_
+$_YEARdesc_
+$_YEARMONTH_
+$_YEARMONTHdesc_
+
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+#* ############################ TOC / REFERENCE FOR ALL VARLIST ENTRIES & DESCRIPTIONS #######################################################
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+#! PLEASE NOTE: NEWLINES IN VARIABLES ARE SHOWN HERE AS <!NL!> TO MAINTAIN FORMATTING AS WELL AS VALUES HERE ARE TEMPLATE, NOT SUBSTITUTED VALUES.
+
+
+
+
+# TEMPLATE_VARIABLE NAME                     VALUE                                                                                                                                                  
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# $_ADDTAG_IMAGEHASH_                        "$(echo -e "-api <!NL!> ImageHashType=$hashALGO <!NL!> -XMP:OriginalImageHash<ImageDataHash")"                                                         
+# $_ADDTAG_IMAGEHASHdesc_                    "#* Creates imagehash tag."                                                                                                                            
+# $_ADDTAG_PRESERVEDFILENAMEdesc_            "#* Adds the PreservedFileName tag."                                                                                                                   
+# $_ADDTAG_PRESERVEDFILENAME_                "-XMP-xmpMM:PreservedFileName<filename"                                                                                                                
+# $_ANDROIDMANUFACTURER_                     '${Keys:AndroidManufacturer;$_="[$_]"}'                                                                                                                
+# $_ANDROIDMANUFACTURERdesc_                 "#* Manufacturer"                                                                                                                                      
+# $_ANDROIDMODEL_                            '${Keys:AndroidModel;$_="[$_]"}'                                                                                                                       
+# $_ANDROIDMODELdesc_                        "#* Model of android phone."                                                                                                                           
+# $_COUNTER_                                 '%+3c'                                                                                                                                                 
+# $_COUNTERdesc_                             "#* Counter (Filename collision avoidance.)"                                                                                                           
+# $_DDATEFORMAT_                             "$(echo -e "-d <!NL!> %Y-%m-%d_%H.%M.%S__")"                                                                                                           
+# $_DDATEFORMATdesc_                         "#* (Prefer per dir option) -d/-dateFormat - Format for date/time values"                                                                              
+# $_DIRSTARTdesc_                            "#* Directory output destination start command."                                                                                                       
+# $_DIRSTART_                                "-Directory<"                                                                                                                                          
+# $_DSTDIR_                                  "$DSTDIR"                                                                                                                                              
+# $_DSTDIRdesc_                              "#* DESTINATION DIRECTORY: OUTPUT directory for processed and renamed images"                                                                          
+# $_EXECUTEdesc_                             "#* RUN EVERYTHING UP TO HERE AS A SPECIFIC COMMAND SET"                                                                                               
+# $_EXECUTE_                                 "-execute"                                                                                                                                             
+# $_EXTdesc_                                 "#* File Extension"                                                                                                                                    
+# $_EXT_                                     '%e'                                                                                                                                                   
+# $_EXTLIST_                                 "$EXTList"                                                                                                                                             
+# $_EXTLISTdesc_                             "#* Extensions to work on"                                                                                                                             
+# $_EZ_SETTINGS_META_                        "$(echo -e "$_SRCDIR_ <!NL!> -execute <!NL!> ")"                                                                                                       
+# $_EZ_SETTINGS_METAdesc_                    "#TBD"                                                                                                                                                 
+# $_EZ_SETTINGS_PROTO_                       "$(echo -e "-m <!NL!> -P <!NL!> -q <!NL!> -q <!NL!> $_EXTLIST_ <!NL!> --ext <!NL!> xmp <!NL!> -tagsfromfile <!NL!> -overwrite_original <!NL!> ")"      
+# $_EZ_SETTINGS_PROTOdesc_                   "#TBD"                                                                                                                                                 
+# $_FILEORDERFILENAME_                       "$(echo -e "-fileOrder <!NL!> -FileName")"                                                                                                             
+# $_FILEORDERFILENAMEdesc_                   "#* Process in order of filename. Slow, dont use if possible."                                                                                         
+# $_FMTLINE_                                 "#############################################################################################################################"                        
+# $_FNAMESTARTdesc_                          "#* Rename/move starting with SmartDate function included in the config that came with this script."                                                   
+# $_FNAMESTART_                              '-filename<'                                                                                                                                           
+# $_GETTAGSFROMCURRENTFILE_                  "$(echo -e "-tagsfromfile <!NL!> ")"                                                                                                                   
+# $_GETTAGSFROMCURRENTFILEdesc_              "#* GETS / SETS TAGS FROM CURRENT FILE "                                                                                                               
+# $_HASHALGORITHM_                           "${hashALGO}"                                                                                                                                          
+# $_HASHALGORITHMdesc_                       "#* Algorithm for creating the XMP:OriginalImageHash tag."                                                                                             
+# $_IMAGESIZE_                               '${ImageSize;$_="[$_]"}'                                                                                                                               
+# $_IMAGESIZEdesc_                           "#* Image Size composite tag"                                                                                                                          
+# $_KEEPNAME_                                "$exifToolBaseNameSeperator\$basename"                                                                                                                 
+# $_KEEPNAMEdesc_                            "#* Blank unless -k keepname option enabled, Seperator + original filename if switch set"                                                              
+# $_MAKE_                                    '${Make;$_="[$_]"}'                                                                                                                                    
+# $_MAKEdesc_                                "#* Make of Android phone tag."                                                                                                                        
+# $_MODEL_                                   '${Model;$_="[$_]"}'                                                                                                                                   
+# $_MODELdesc_                               "#* Model of camera/phone"                                                                                                                             
+# $_NOEXIFDESTdesc_                          "#* FOLDER NAME FOR NOEXIF DESTINATION DIRECTORY: OUTPUT directory for items without EXIF."                                                            
+# $_NOEXIFDEST_                              "NO-EXIF"                                                                                                                                              
+# $_NOXMP_                                   "$(echo -e "--ext <!NL!> xmp")"                                                                                                                        
+# $_NOXMPdesc_                               "#* DO NOT WORK ON XMP FILES # Don't process xmp files, strangely enough used mostly to process xmp files.. lol.. "                                    
+# $_PRESERVEdesc_                            "#* (-P / -preserve) Preserve file modification date/time"                                                                                             
+# $_PRESERVE_                                "-P"                                                                                                                                                   
+# $_QUIET_                                   "$(echo -e "-q")"                                                                                                                                      
+# $_QUIETdesc_                               "#* Quieter output, put twice for very quiet. shhbbyisok"                                                                                              
+# $_RECURSE_                                 "${RECURSE}"                                                                                                                                           
+# $_RECURSEdesc_                             "#* Recurse. If recurse switch set, this will be -r, otherwise null/empty. "                                                                           
+# $_SDATEFULL_                               '${SmartDate;DateFmt("%Y-%m__%d_%H.%M.%S__")}'                                                                                                         
+# $_SDATEFULLdesc_                           "#* 2020-10-02_14.01.31__ SmartDate full output, used for filename usually."                                                                           
+# $_SHHBBYISOK_                              "$(echo -e "-m <!NL!> -q <!NL!> -q")"                                                                                                                  
+# $_SHHBBYISOKdesc_                          "#* -m -q -q Supress minor errors and super quiet shortcut tag."                                                                                       
+# $_SRCDIR_                                  "$SRCDIR"                                                                                                                                              
+# $_SRCDIRdesc_                              "#* SOURCE DIRECTORY: INPUT directory containing unprocessed media."                                                                                   
+# $_SRCFILE_EXT_XMP_                         "$(echo -e "-srcfile <!NL!> %d%f.%e.xmp")"                                                                                                             
+# $_SRCFILE_EXT_XMPdesc_                     "#* DIRECT ACTIONS TO FILENAME.EXT.XMP THIS FILE INSTEAD OF CURRENT FILE"                                                                              
+# $_SRCFILE_XMP_                             "$(echo -e '-srcfile <!NL!> %d%f.xmp')"                                                                                                                
+# $_SRCFILE_XMPdesc_                         "#* DIRECT ACTIONS TO FILENAME.XMP THIS FILE INSTEAD OF CURRENT FILE"                                                                                  
+# $_SUPRESSMINERRdesc_                       "#* Suppress minor errors, if used, must be used equally (or none) on XMP + media argfiles. Otherwise problems."                                       
+# $_SUPRESSMINERR_                           "-m"                                                                                                                                                   
+# $_VERBOSE_                                 " "                                                                                                                                                    
+# $_VERBOSEdesc_                             "# When verbose switch set, this will be -v[0...5], 5 being most verbose. Set by VLevel "                                                              
+# $_WRITEMODE_CREATE_INSERTMISSING_          "$(echo -e "-wm <!NL!> cg")"                                                                                                                           
+# $_WRITEMODE_CREATE_INSERTMISSINGdesc_      "#* write mode CREATE AND ADD ONLY NEW TAGS "                                                                                                          
+# $_WRITEOVERFILEdesc_                       "#TBD"                                                                                                                                                 
+# $_WRITEOVERFILE_                           "-overwrite_original"                                                                                                                                  
+# $_XIAOMIPRODUCTNAME_                       '${Keys:XiaomiProductMarketname;$_="[$_]"}'                                                                                                            
+# $_XIAOMIPRODUCTNAMEdesc_                   "#* Phone name tag from Xiaomi"                                                                                                                        
+# $_YEAR_                                    '${SmartDate;DateFmt("%Y")}'                                                                                                                           
+# $_YEARdesc_                                "#* YEAR Folder"                                                                                                                                       
+# $_YEARMONTH_                               '${SmartDate;DateFmt("%Y.%m-[%B]")}'                                                                                                                   
+# $_YEARMONTHdesc_                           "#* SmartDate function located in config"                                                                                                              
+

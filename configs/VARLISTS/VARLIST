@@ -1,11 +1,12 @@
 #!/bin/bash
+# shellcheck disable=all
+
 #! 	###############################################################################
 #! 	#! ALL VARIABLES, SUBSTITUTIONS AND SWITCHES WE WISH TO PROGRAMMATICALLY USE
 #! 	#! IN THE ARGUMENT FILE ARE DEFINED HERE.
 #! 	# TODO VARNAME + VARNAMEdesc WILL AUTO POPULATE DOCUMENTATION AND ARGFILES.
 #! 	# TODO PARTIAL, NOT QUITE COMPLETE
 #! 	###############################################################################
-#! shell#c#eck disable
 #! RESORT THIS FILE USIING THIS COMMAND: cat ./VARLIST |grep -siv "#!" | LC_ALL=C sort -u -o ./VARLIST.SORTED
 
 #_FIXD_DIR_TEMPLATE_A_="$(echo -e "$_DIRSTART_$_DSTDIR_/$_MAKE_$_ANDROIDMANUFACTURER_$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_/$_EXT_/$_YEARMONTH_")"
@@ -15,12 +16,16 @@
 #_FIXD_DIR_TEMPLATE_C_="\$_DIRSTART_\$_DSTDIR_/\$_MAKE_\$_ANDROIDMANUFACTURER_\$_MODEL_\$_ANDROIDMODEL_\$_XIAOMIPRODUCTNAME_/\$_EXT_/\$_YEARMONTH_"
 #_FIXD_DIR_TEMPLATE_D_="\$DIRSTART\$DSTDIR/\$MAKE\$ANDROIDMANUFACTURER\$MODEL\$ANDROIDMODEL\$XIAOMIPRODUCTNAME/\$EXT/\$YEARMONTH"
 #_FIXD_DIR_TEMPLATE_E_="$DIRSTART$DSTDIR/$MAKE$ANDROIDMANUFACTURER$MODEL$ANDROIDMODEL$XIAOMIPRODUCTNAME/$EXT/$YEARMONTH"
-#_FIXD_NAME_TEMPLATE_A_="$(echo -e "$_FNAMESTART_$_SDATEFULL_$_IMAGESIZE_$_KEEPNAME_$_COUNTER_.$_EXT_")"
-#_FIXD_NAME_TEMPLATE_Adesc_="#TBD"
+_FIXD_NAME_TEMPLATE_A_="$(echo -e "$_FNAMESTART_$_SDATEFULL_$_IMAGESIZE_$_KEEPNAME_$_COUNTER_.$_EXT_")"
+_FIXD_NAME_TEMPLATE_Adesc_="#TBD"
 _ADDTAG_IMAGEHASH_="$(echo -e "-api\nImageHashType=$hashALGO\n-XMP:OriginalImageHash<ImageDataHash")"
 _ADDTAG_IMAGEHASHdesc_="#* Creates imagehash tag."
 _ADDTAG_PRESERVEDFILENAME_="-XMP-xmpMM:PreservedFileName<filename"
 _ADDTAG_PRESERVEDFILENAMEdesc_="#* Adds the PreservedFileName tag."
+_ADDTAG_ORIGINALFILENAME_="-XMP-getty:OriginalFilename<filename"
+_ADDTAG_ORIGINALFILENAMEdesc_="#* Adds the OriginalFileName tag."
+
+
 _ANDROIDMANUFACTURER_='${Keys:AndroidManufacturer;$_="[$_]"}'
 _ANDROIDMANUFACTURERdesc_="#* Manufacturer"
 _ANDROIDMODEL_='${Keys:AndroidModel;$_="[$_]"}'
@@ -42,6 +47,8 @@ _EXTdesc_="#* File Extension"
 _EZ_SETTINGS_META_="$(echo -e "$_SRCDIR_\n-execute\n")"
 _EZ_SETTINGS_METAdesc_="#TBD"
 _EZ_SETTINGS_PROTO_="$(echo -e "-m\n-P\n-q\n-q\n$_EXTLIST_\n--ext\nxmp\n-tagsfromfile\n-overwrite_original\n")"
+# EZ_SETTINGS_PROTO=$_VERBOSE_, $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
+
 _EZ_SETTINGS_PROTOdesc_="#TBD"
 _FILEORDERFILENAME_="$(echo -e "-fileOrder\n-FileName")"
 _FILEORDERFILENAMEdesc_="#* Process in order of filename. Slow, dont use if possible."
