@@ -1,0 +1,346 @@
+#!/bin/bash
+# shellcheck disable=all
+# exiftool argfile
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+#* MISC NOTES
+#! CONSIDERED ORDER OF OPERATIONS
+
+#* 	-	MEDIA - MOVES FILES MISSING EXIF METADATA TO SEPERATE LOCATION
+#*	-	XMP - RENAMES-EXISTING-SIDECARS-TO-CURRENT-SCHEME(filename.ext.xmp)
+#* 	-	XMP - UPDATES OR CREATES SIDECAR, FILLS ANY MISSING TAGS & XMP-xmpMM:PreservedFileName & XMP-getty:OriginalFilename
+#*	-	XMP & MEDIA - RENAME AND MOVE FILES TO STANDARD NAMING SCHEME
+#*	-
+#*	-
+
+#* Create a list of files without exif info
+#! exiftool -r  -if 'not $EXIF:All' -FileName  -ext jpg ./NOEXIF >> ./NotEXIFFILES.txt
+
+#* Create a list of files that have exif info
+#! exiftool -r  -if '$EXIF:All' -FileName  -ext jpg ./NOEXIF >> ./HASEXIFFILES.txt
+
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+
+#~ ######################################################################################################
+-echo
+'#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾'
+-echo
+'1 - MEDIA - MOVES FILES MISSING EXIF METADATA TO SEPERATE LOCATION'
+-echo
+'#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾'
+#~ ######################################################################################################
+
+#!/bin/bash
+# shellcheck disable=all
+# exiftool argfile
+# #~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+# $_FMTLINE_
+# $_FMTLINE_
+# ##############################################################################
+# #* 	INFO: MEDIA - MOVES FILES MISSING EXIF METADATA TO SEPERATE LOCATION
+# #~ 	VERSION: 2026-05-15 4:03 AM - VALIDATED
+# #! Tests
+# # TODO BUGGED OUT ON CERTAIN VIDEOS, NEED TO DEBUG
+# ##############################################################################
+# # XMP (UNLIKELY TO HAVE BUT INDEED POSSIBLE)
+# $_ZZ_EZ_PRE_
+# $_TARGETFILE_EXT_XMP_
+
+# -if
+# not $EXIF:All
+
+# $_ZZ_KEEP_FILENAME_TEMPLATE_.xmp
+# $_ZZ_NOEXIF_DIR_TEMPLATE_
+# $_ZZ_EZ_POST_
+
+# $_FMTLINE_
+# # $_ADD_PAUSE_
+
+# # MEDIA FILES
+# $_ZZ_EZ_PRE_
+# -if
+# not $EXIF:All
+# $_ZZ_KEEP_FILENAME_TEMPLATE_
+# $_ZZ_NOEXIF_DIR_TEMPLATE_
+# $_ZZ_EZ_POST_
+# # ######################################################################################
+# # TODO CONSIDER THESE TAG SETS AS WELL
+# #not $exif:all and not $iptc:all and not $xmp:all'
+# #not $all
+# # -all
+# # -xmp:all
+# # -exif:all
+# # -composite:all
+# # -quicktime:all
+# # -iptc:all
+# # -gps:all
+# # ######################################################################################
+# $_FMTLINE_
+# $_FMTLINE_
+# #~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+
+#~ ######################################################################################################
+
+-echo
+'#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾'
+-echo
+'2 - NEXT STEP: XMP - RENAMES-EXISTING-SIDECARS-TO-CURRENT-SCHEME(filename.ext.xmp)'
+-echo
+'#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾'
+
+#~ ######################################################################################################
+
+#!/bin/bash
+# shellcheck disable=all
+# exiftool argfile
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+$_FMTLINE_
+$_FMTLINE_
+# ######################################################################################################
+#* 	INFO: XMP - RENAMES-EXISTING-SIDECARS-TO-CURRENT-SCHEME(filename.ext.xmp)
+#~ 	VERSION: 2026-05-15 4:03 AM - VALIDATED
+#!  TEST: CHECK CORRECT RENAME - PASSED, HOWEVER  <GettyImagesGIFT:OriginalFilename> IS rewritten
+# ######################################################################################################
+$_ZZ_EZ_PRE_NO_GETTAGS_
+$_SHHBBY_
+$_TARGETFILE_XMP_
+$_ZZ_KEEP_FILENAME_TEMPLATE_.xmp
+$_ZZ_EZ_POST_
+# ######################################################################################################
+$_FMTLINE_
+$_FMTLINE_
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+
+#~ ######################################################################################################
+
+-echo
+'#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾'
+-echo
+'3 - NEXT STEP: UPDATES OR CREATES SIDECAR, FILLS ANY MISSING TAGS & XMP-xmpMM:PreservedFileName & XMP-getty:OriginalFilename'
+-echo
+'#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾'
+
+#~ ######################################################################################################
+
+#!/bin/bash
+# shellcheck disable=all
+# exiftool argfile
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+$_FMTLINE_
+$_FMTLINE_
+# ######################################################################################################
+#* 	INFO: XMP - UPDATES OR CREATES SIDECAR, FILLS ANY MISSING TAGS & XMP-xmpMM:PreservedFileName & XMP-getty:OriginalFilename
+#~ 	VERSION:  2026-05-10 12:51 PM VALIDATED
+#!  TEST:
+#   TODO:
+# ######################################################################################################
+$_ZZ_EZ_PRE_
+$_SHHBBY_
+
+$_TARGETFILE_EXT_XMP_
+
+#* ADDS ALL TAGS INCLUDING HASH/CHECKSUM XMP-xmpMM:PreservedFileName, XMP-getty:OriginalFilename
+#* PROBABLY ONLY NEED TO FORCE UPDATE ON ORIGINAL FILENAMES IF NEEDED TO CORRECT, AND WE REMOVE THE WRITEMODE OPTION
+$_WRITEMODE_CREATE_INSERTMISSING_
+$_ADDTAG_PRESERVEDFILENAME_
+$_ADDTAG_ORIGINALFILENAME_
+$_ADDTAG_IMAGEHASH_
+-all
+
+# QUIRK, -o OPTION REQUIRED OR IT REFUSES TO CREATE THE MISSING FILE
+-o '%f$_COUNTER_.$_EXT_.xmp'
+
+$_ZZ_EZ_POST_
+# ######################################################################################################
+$_FMTLINE_
+$_FMTLINE_
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+
+#~ ######################################################################################################
+
+-echo
+'#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾'
+-echo
+'4 - NEXT STEP: XMP & IMAGE/VIDEO, RENAME AND MOVE FILES TO STANDARD NAMING SCHEME'
+-echo
+'#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾'
+
+#~ ######################################################################################################
+
+#!/bin/bash
+# shellcheck disable=all
+# exiftool argfile
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+$_FMTLINE_
+$_FMTLINE_
+# #####################################################################################################
+#* 	INFO: XMP & MEDIA FILES, RENAME AND MOVE FILES TO STANDARD NAMING SCHEME
+#~ 	VERSION:  2026-05-15 7:03AM VALIDATED
+# ######################################################################################################
+
+# XMP
+$_ZZ_EZ_PRE_
+$_SHHBBY_
+
+$_TARGETFILE_EXT_XMP_
+$_ZZ_FIXD_FILENAME_TEMPLATE_.xmp
+$_ZZ_FIXD_DIR_TEMPLATE_
+$_ZZ_EZ_POST_
+
+$_FMTLINE_
+
+# MEDIA
+$_ZZ_EZ_PRE_
+$_SHHBBY_
+
+$_ZZ_FIXD_FILENAME_TEMPLATE_
+$_ZZ_FIXD_DIR_TEMPLATE_
+$_ZZ_EZ_POST_
+
+# ######################################################################################################
+$_FMTLINE_
+$_FMTLINE_
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+
+
+#~ ######################################################################################################
+-echo
+'#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾'
+-echo
+'ALT STEP: XMP & PHOTO/VIDEO/OTHER SPECIFIED FILES, MOVE FILES TO STANDARD DIR SCHEME, KEEP CURRENT FILENAME'
+-echo
+'#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾'
+
+#~ ######################################################################################################
+#!/bin/bash
+# shellcheck disable=all
+# exiftool argfile
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+$_FMTLINE_
+$_FMTLINE_
+# #####################################################################################################
+#* 	INFO: XMP & MEDIA FILES, MOVE FILES TO STANDARD DIR SCHEME, KEEP CURRENT FILENAME
+#~ 	VERSION:  
+# ######################################################################################################
+
+# XMP
+$_ZZ_EZ_PRE_
+$_SHHBBY_
+
+$_TARGETFILE_EXT_XMP_
+#$_ZZ_FIXD_FILENAME_TEMPLATE_.xmp
+$_ZZ_KEEP_FILENAME_TEMPLATE_.xmp
+$_ZZ_FIXD_DIR_TEMPLATE_
+$_ZZ_EZ_POST_
+
+$_FMTLINE_
+
+# MEDIA
+$_ZZ_EZ_PRE_
+$_SHHBBY_
+
+#$_ZZ_FIXD_FILENAME_TEMPLATE_
+$_ZZ_KEEP_FILENAME_TEMPLATE_
+$_ZZ_FIXD_DIR_TEMPLATE_
+$_ZZ_EZ_POST_
+
+# ######################################################################################################
+$_FMTLINE_
+$_FMTLINE_
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+
+# ######################################################################################################
+# ------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------
+# ######################################################################################################
+#~ -----------------------------------------------------------------------------------------------------
+#~ 🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾🅾
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# MOSTLY EMPTY TEMPLATE FOR REFERENCE
+# ######################################################################################################
+#!/bin/bash
+# shellcheck disable=all
+# exiftool argfile
+# ######################################################################################################
+# $_FMTLINE_
+# $_FMTLINE_
+# #####################################################################################################
+#* 	INFO:
+#~ 	VERSION:
+# ######################################################################################################
+# $_ZZ_EZ_PRE_
+
+# CREATE AND ADD ONLY MISSING TAGS
+# -wm cg to only create new tags (and avoid editing existing ones)
+# The default write mode is wcg.
+# w - Write existing tags
+# c - Create new tags
+# g - create new Groups as necessary
+# For example, use -wm cg to only create new tags (and avoid editing existing ones).
+# $_WRITEMODE_CREATE_INSERTMISSING_
+
+# -all
+# -all:all
+# -xmp:all
+# -exif:all
+# -composite:all
+# -quicktime:all
+# -iptc:all
+# -gps:all
+
+# $_ZZ_EZ_POST_
+# ######################################################################################################
+# $_FMTLINE_
+# $_FMTLINE_
+# ######################################################################################################
+
+# CREATE AND ADD ONLY MISSING TAGS
+# -wm cg to only create new tags (and avoid editing existing ones)
+# The default write mode is wcg.
+# w - Write existing tags
+# c - Create new tags
+# g - create new Groups as necessary
+# For example, use -wm cg to only create new tags (and avoid editing existing ones).
+
+#all
+# -all
+# -all:all
+# -xmp:all
+# -exif:all
+# -composite:all
+# -quicktime:all
+# -iptc:all
+# -gps:all

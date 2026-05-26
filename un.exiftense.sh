@@ -1,205 +1,87 @@
 #!/bin/bash
 # DEBUG: !/bin/bash -x
-# shellcheck disable=SC2016,SC2162
+# shellcheck disable=SC2016,SC2162,SC2317,SC2329
 
 # Version: 1.0 Public Release, v7.2 Internal
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Locate the script directory for relative sourcing
 #SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SCRIPT_DIR="$(dirname "$0")"
-
+CONFIGS_DIR="${SCRIPT_DIR}/configs"
 readonly SCRIPT_DIR
-
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-echo -e "$0 is running from $SCRIPT_DIR"
-sleep .5
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #* EARLY SET OF DEBUG TIMER FOR DEBUGGING OF THINGS BEFORE CONFIG IS LOADED.
 sTIMER="wait"
 
 # #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# #* SOURCES GIVEN FILE INTO SCRIPT
-# #! USAGE: resourceLOADER "PATH/FILENAME" (relative to ${SCRIPT_DIR})
-# #! OR 	  resourceLOADER "FULL_PATH/FILENAME" "True" (to load from any location)
-# resourceLOADER() {
+resourceLOADER() {
+	#* SOURCES GIVEN FILE INTO SCRIPT
+	#! USAGE: resourceLOADER "PATH/FILENAME" (relative to ${SCRIPT_DIR})
+	#! OR 	  resourceLOADER "FULL_PATH/FILENAME" "True" (to load from any location)
 
-# 	# shellcheck disable=SC2317
-# 	if [[ -z "$2" ]]; then
+	# # shellcheck disable=SC2317
+	# if [[ -z "$2" ]]; then
 
-# 		#* If second parameter unset prepend the base scripting path.
-# 		local targetFILE="${SCRIPT_DIR}/${1}"
+	# 	#* If second parameter unset prepend the base scripting path.
+	# 	local targetFILE="${SCRIPT_DIR}/${1}"
 
-# 	else
+	# else
 
-# 		#* If exists any second parameter, don't prepend the base scripting path
-# 		local targetFILE="${1}"
+	# 	#* If exists any second parameter, don't prepend the base scripting path
+	# 	local targetFILE="${1}"
 
-# 	fi
+	# fi
 
-# 	if [[ -f "${targetFILE}" ]]; then
-# 		# shellcheck source=/dev/null
-# 		echo "Loading ${targetFILE}..."
-# 		source "${targetFILE}"
-# 	else
-# 		printf "Error: Target File '%s' not found.\n" "$1" >&2
-# 		exit 1
-# 	fi
-
-# }
+	# if [[ -f "${targetFILE}" ]]; then
+	# 	# shellcheck source=/dev/null
+	# 	echo "Loading ${targetFILE}..."
+	# 	source "${targetFILE}"
+	# else
+	# 	printf "Error: Target File '%s' not found.\n" "$1" >&2
+	# 	exit 1
+	# fi
+	true
+}
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# #* LOADS DEFAULT CONFIG OR USER SPECIFIED CONFIG
-# #! USAGE: loadCONFIG
-# loadCONFIG() {
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# 	if [[ -z "${thisCONFIG}" ]]; then
-# 		#* SET DEFAULT CONFIG FOR CASE IF USER DOESN'T SPECIFIY
-# 		thisCONFIG="un.exiftense.config"
-# 	fi
+loadCONFIG() {
+	#* LOADS DEFAULT CONFIG OR USER SPECIFIED CONFIG
+	#! USAGE: loadCONFIG
 
-# 	# shellcheck source=configs/un.exiftense.config
-# 	source "${SCRIPT_DIR}"/"${thisCONFIG}"
-
-#
-#
-#
-
-# 	DEEBUG "${FUNCNAME[0]}"  \
-# 	'echo -e "${SCRIPT_DIR}"/"${thisCONFIG} \n"' \
-# 	'echo -e "2 \n"' \
-# 	'echo -e "3 \n"'
-
-# }
-# #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-load_DEFAULTS() {
-
+	#* SET DEFAULT CONFIG FOR CASE IF USER DOESN'T SPECIFIY
 	if [[ -z "${thisCONFIG}" ]]; then
-		#* SET DEFAULT CONFIG FOR CASE IF USER DOESN'T SPECIFIY
-		thisCONFIG="un.exiftense.config"
+
+		thisCONFIG="${CONFIGS_DIR}/un.exiftense.config"
+
+	else
+
+		thisCONFIG="${CONFIGS_DIR}/${thisCONFIG}"
+
 	fi
 
-	# ###############################################################################
-	# #* USER FACING VARIABLES ######################################################
-	# #* YOU CAN SET DEFAULT OPTIONS FOR COMMAND LINE SWITCHES BELOW
-	# ###############################################################################
-	# SRCDIR="./in"
-	# DSTDIR="./out"
-	# hashALGO="SHA512"
-	# XMPFunction="True"
-	# RECURSE="True"
-	# QT_UTC=0
-	# KEEPName="True"
-	# TESTMODE="False"
-	# TESTMODERESET="False"
-	# VIDEOS="True"
-	# PHOTOS="True"
-	# ###############################################################################
-	# #* USER CONFIG: VERBOSITY AND DEBUG MISC OPTIONS
-	# ###############################################################################
-	# DEBUG="False"
+	if [[ -e "${thisCONFIG}" && -r "${thisCONFIG}" ]]; then
 
-	# VERBOSE="False"
-	# vLVL=2 # Verbosity level for exiftool when set to true.
-	# # Verbose overrides quiet mode, Verbose 0 exiftool prints current filename only.
+		#echo -e "LOADING: ${thisCONFIG} \n"
+		# shellcheck source=/dev/null
+		source "${thisCONFIG}"
 
-	# #! DEBUG SLEEP TIMER, TIME BETWEEN COMMANDS TO DEBUG ONSCREEN INFO
-	# #! Can also be "wait" to wait for keypress
-	# sTIMER="wait"
-	# #sTIMER=".5"
-
-	# #* TEMP FOLDER,  ONLY CHANGE THE  TMPDIR IF YOU DON'T WANT TO USE THE DEFAULT OF "/run/user/$YOURUSERID/"
-	# TMPDIR=""
-	# Cleanup_TempFiles="False"
-	# timer_TempFileCleanup="5"
-	# saveFilesDest_REFTEMPLATE="${SCRIPT_DIR}/configs/ARGFILES/REFERENCE-Templates"
-
-	# ###############################################################################
-
-	# ###############################################################################
-	# #* USER CONFIG: EXTENSION LISTS FOR TYPES OF FILES YOU WANT THIS SCRIPT TO DEAL WITH
-	# ###############################################################################
-	# #! PHOTO EXTENSION LIST
-	# declare -g -a EXTList_Photos=("webp" "dng" "jpg" "heic" "png" "gif" "bmp" "tiff" "tif")
-
-	# #! VIDEO EXTENSION LIST
-	# declare -g -a EXTList_Videos=("mov" "mp4" "mpg" "3gp" "wmv" "webm" "avi" "m4v")
-	# ###############################################################################
-
-	# ###############################################################################
-	# #* USER CONFIG: EXIFTOOL SETTINGS
-	# ###############################################################################
-	# # IF PRESENT IN YOUR PATH, SIMPLY LIST AS "exiftool"
-	# exiftoolPATH="/usr/bin/exiftool"
-
-	# #/fixd-toolkit/scripts/scripts.FILE-ORGANIZATION/Un.EXIFTense/un.exiftense.exiftoolconfig
-	# exiftoolCONFIG="${SCRIPT_DIR}/configs/exiftool.configs/un.exiftense.exiftoolconfig"
-
-	# # WHEN USING KEEPING NAME OPTION, CAN USE THIS AS A SEPERATOR, TEMPLATE DEPENDENT
-	# exifToolBaseNameSeperator="___"
-	# ###############################################################################
-
-	# ###############################################################################
-	# #* USER CONFIG: VARLIST & ARGFILES CONFIGURATION SETTINGS
-	# ###############################################################################
-
-	# #! BASE PATH TO VARIABLE CONFIG LIST
-	# f_externalVarlist="${SCRIPT_DIR}/configs/VARLISTS/VARLIST"
-
-	# #! BASE PATH TO ARGFILE TEMPLATES
-	# ARGFiles_PATH="${SCRIPT_DIR}/configs/ARGFILES/SERIES04"
-
-	# ###############################################################################
-	# # ARGFILE TEMPLATE NAMES (FILENAMES)
-	# # List of argfile filenames in ARGFiles_PATH to run in the order you wish to run them.
-
-	# # Can be formatted like this, all in one declaration, or one by one, or a mix.
-	# # declare -a TESTMODEARGFileTemplatesList=("TEMPLATE-01" "TEMPLATE-02")
-
-	# declare -g -a ARGFileTemplatesList=()
-	# ARGFileTemplatesList+=("S04_P01_RENAMES-FILE_AND_SIDECAR_TO_HASHVALUE.argfile.sh")
-
-	# #echo -e "Templates active:${ARGFileTemplatesList[@]}\n"
-	# # TODO ADD FILE EXISTENCE CHECK FOR TEMPLATES
-	# ###############################################################################
-
-	# ###############################################################################
-	# #* USER CONFIG: TESTMODE CONFIGURATION
-	# ###############################################################################
-	# # Alternate list of argfile templates to be used in TESTMODE.
-	# declare -g -a TESTMODEARGFileTemplatesList=()
-
-	# TESTMODEARGFileTemplatesList+=("S04_P01_RENAMES-FILE_AND_SIDECAR_TO_HASHVALUE.argfile.sh")
-
-	# #echo -e "Templates active for TESTMODE (if active): ${TESTMODEARGFileTemplatesList[@]} \n"
-
-	# ###############################################################################
-	# # TESTMODE FOLDERS AND PATHS
-	# # THESE ARE RELEVENT WHEN -t (testmode) or -T switch (testmode reset) is enabled.
-
-	# # Define folders for test mode usage.
-	# # DATA The folder containing the original media that is copied to the IN dir.
-	# TESTMODE_data="${SCRIPT_DIR}/test-src"
-
-	# # IN is where photos and vids will be copied and processed.
-	# TESTMODE_in="${SCRIPT_DIR}/test-in"
-
-	# # OUT is destination after processing.
-	# TESTMODE_out="${SCRIPT_DIR}/test-out"
-	# ###############################################################################
-	# ###############################################################################
+	else
+		echo -e "\n${thisCONFIG} is not readable or does not exist\n\n" >&2
+		showHELP
+		exit 1
+	fi
 
 	DEEBUG "${FUNCNAME[0]}"
 
 }
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* Initialization of some default stuff used later.
-#! USAGE: prepInternalSettings
-
 prepInternalSettings() {
+	#* Initialization of some default stuff used later.
+	#! USAGE: prepInternalSettings
 
 	#fNAME='if [[ "$DEBUG" == "True" ]]; then echo -e "${FUNCNAME}\n\n" ; fi'
 	# Destination for generated example template.
@@ -246,9 +128,9 @@ prepInternalSettings() {
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* EZ DEBUG FUNCTION, TAKES UP TO 8 ARGS THAT ARE EVALUATED AND SLEEPS AT THE END OF EACH CALL
-#! USAGE: DEEBUG 'echo -e "\nEXAMPLE DEBUG NOTIFICATION \n"''
 DEEBUG() {
+	#* EZ DEBUG FUNCTION, TAKES UP TO 8 ARGS THAT ARE EVALUATED AND SLEEPS AT THE END OF EACH CALL
+	#! USAGE: DEEBUG 'echo -e "\nEXAMPLE DEBUG NOTIFICATION \n"''
 
 	if [[ "$DEBUG" == "True" ]]; then
 
@@ -286,35 +168,37 @@ DEEBUG() {
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* PRINTS PROGRAM HELP WHEN CALLED OR WHEN ERROR OCCURS WITH INITIAL SWITCHES
-#! USAGE: showHELP
 showHELP() {
+	#* PRINTS PROGRAM HELP WHEN CALLED OR WHEN ERROR OCCURS WITH INITIAL SWITCHES
+	#! USAGE: showHELP
+
+	#* Load config for default values to show
+	if [[ -z "${thisCONFIG}" ]]; then
+		loadCONFIG
+	fi
 
 	DEEBUG "${FUNCNAME[0]}"
-	load_DEFAULTS
-	#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-	#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 	#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 	# --- Usage Function ---
 	#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 	echo "Usage: $(basename "$0") [OPTIONS]"
 	echo "Script to rename PHOTOS & VIDEOS & XMP sidecar files based on EXIF/XMP metadata."
 	echo "XMP Sidecar stores both the original filename and hash checksum for posterity."
-	echo ""
+	echo "Command line switches override config file options."
 	echo "Options:              *Required"
-	echo "  -c <string>         Choose alternate config for $0. (default: $thisCONFIG)"
-	echo "  -s <directory>      *Source of media folder (default: $SRCDIR)"
-	echo "  -d <directory>      *Sorted/Output folder, created automatically if needed. (default: $DSTDIR)"
-	echo "  -k <boolean>        Keep original filename suffixed to new file name (default: $KEEPName)"
-	echo "  -r <boolean>        Enable/disable recursive processing of source media dir. (default: $RECURSE)"
-	echo "  -w <boolean>        Enable/disable processing of videos. (default: $VIDEOS)"
-	echo "  -x <boolean>        Enable XMP update/creation with has + original filename (default: $XMPFunction)"
-	echo "  -m <string>         Choose hashing function: 'MD5', 'SHA256' or 'SHA512' (default: ${hashALGO})"
-	echo "  -q <number 0 or 1>  Set QuickTime UTC (default: $QT_UTC)"
-	echo "  -v <boolean>        Enable verbose mode for exiftool (default: ${VERBOSE})"
-	echo "  -t <boolean>        Enables test functions (default: $TESTMODE)"
-	echo "  -T <boolean>        Enables test functions & RESETS TESTING data. (Set dirs in script.) (default: $TESTMODERESET)"
-	echo "  -D <boolean>        Enable debug. Very verbose output from script actions: $DEBUG)"
+	echo "  -c <string>         Choose alternate config for $(basename "${0}"). (CURRENT: ${thisCONFIG})"
+	echo "  -s <directory>      *Source of media folder (CURRENT: ${SRCDIR})"
+	echo "  -d <directory>      *Sorted/Output folder, created automatically if needed. (CURRENT: ${DSTDIR})"
+	echo "  -k <boolean>        Keep original filename suffixed to new file name (CURRENT: ${KEEPNAME})"
+	echo "  -r <boolean>        Enable/disable recursive processing of source media dir. (CURRENT: ${RECURSE})"
+	echo "  -w <boolean>        Enable/disable processing of videos. (CURRENT: ${VIDEOS})"
+	echo "  -x <boolean>        Enable XMP update/creation with has + original filename (CURRENT: ${XMPFunction})"
+	echo "  -m <string>         Choose hashing function: 'MD5', 'SHA256' or 'SHA512' (CURRENT: ${hashALGO})"
+	echo "  -q <number 0 or 1>  Set QuickTime UTC (CURRENT: ${QT_UTC})"
+	echo "  -v <boolean>        Enable verbose mode for exiftool (CURRENT: ${VERBOSE})"
+	echo "  -t <boolean>        Enables test functions (CURRENT: ${TESTMODE})"
+	echo "  -T <boolean>        Enables test functions & RESETS TESTING data. (Set dirs in script.) (CURRENT: ${TESTMODERESET})"
+	echo "  -D <boolean>        Enable debug. Very verbose output from script actions: (CURRENT: ${DEBUG})"
 	echo "  -h                  Display this help message"
 	echo -e "\n\n\n"
 
@@ -323,9 +207,9 @@ showHELP() {
 }
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* HANDLES  USER SWITCHES VALIDATES SWITCHES AND THEIR NEEDED DATA TYPES BEFORE PROGRAM MAIN LOOP
-#! USAGE: optionsMenuSetup "$@"
 optionsMenuSetup() {
+	#* HANDLES  USER SWITCHES VALIDATES SWITCHES AND THEIR NEEDED DATA TYPES BEFORE PROGRAM MAIN LOOP
+	#! USAGE: optionsMenuSetup "$@"
 
 	DEEBUG "${FUNCNAME[0]}"
 
@@ -339,11 +223,20 @@ optionsMenuSetup() {
 		case $opt in
 		c)
 			# Validate if the argument matches from list options.
-			if [[ ! -e "$OPTARG" && ! -r "$OPTARG" && ! -n "$OPTARG" ]]; then
-				echo "Please put a valid path to a config file." >&2
+			# -e Returns true if FILE exists.
+			# -r Returns true if FILE is marked as readable.
+			# -n Checks if the length of a string is nonzero.
+			# -z Returns true if the length of STRING is zero.
+
+			if [[ -e "${CONFIGS_DIR}/$OPTARG" && -r "${CONFIGS_DIR}/$OPTARG" ]]; then
+				thisCONFIG="$OPTARG"
+				#echo "CONFIG SPECIFIED: $thisCONFIG"
+				loadCONFIG
+
+			else
+				echo "Invalid config file specified." >&2
 				showHELP
 			fi
-			thisCONFIG="$OPTARG"
 			;;
 		s)
 			# Validate if the argument is a directory that exists
@@ -362,7 +255,7 @@ optionsMenuSetup() {
 				echo "Error: -k requires a boolean argument (True or False)." >&2
 				showHELP
 			fi
-			KEEPName="$OPTARG"
+			KEEPNAME="$OPTARG"
 			;;
 		r)
 			# Validate if the argument is a boolean.
@@ -478,20 +371,9 @@ optionsMenuSetup() {
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* INIT DEFAULT SETTINGS
-#! 
-scriptINIT() {
-	load_DEFAULTS
-	optionsMenuSetup "$@"
-	#loadCONFIG
-	prepInternalSettings
-}
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* PRINTS SCRIPT SETTINGS SETTINGS DURING A RUN
-# TODO UPDATE REPORT WITH FORMATTING SETTINGS
 settingsReport() {
+	#* PRINTS SCRIPT SETTINGS SETTINGS DURING A RUN
+	# TODO UPDATE REPORT WITH FORMATTING SETTINGS
 	#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 	#! PRINTS PROGRAM SETTINGS DURING A RUN
 	#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -519,7 +401,7 @@ settingsReport() {
 	XMP HASH ALGO:		${hashALGO}
 	
 	
-	ORIGINAL FILENAME AS SUFFIX:	${KEEPName}	 	
+	ORIGINAL FILENAME AS SUFFIX:	${KEEPNAME}	 	
 	BASENAME SEPERATOR: ${exifToolBaseNameSeperator} 
 	
 	QUICKTIME UTC:		${QT_UTC}
@@ -545,11 +427,11 @@ settingsReport() {
 
 }
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#settingsReport
+
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* TESTMODE VALIDATION: CHECK SETTINGS TO ENSURE CORRECT FILE OPERATION
-#! USAGE: TESTMODE_Validate
 TESTMODE_Validate() {
+	#* TESTMODE VALIDATION: CHECK SETTINGS TO ENSURE CORRECT FILE OPERATION
+	#! USAGE: TESTMODE_Validate
 
 	DEEBUG "${FUNCNAME[0]}"
 
@@ -577,9 +459,9 @@ TESTMODE_Validate() {
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* DESRIPTION: RESETS DATASOURCES FOR THE TESTING OF YOUR ARGFILES
-#! USAGE: TESTMODE_Reset
 TESTMODE_Reset() {
+	#* DESRIPTION: RESETS DATASOURCES FOR THE TESTING OF YOUR ARGFILES
+	#! USAGE: TESTMODE_Reset
 
 	DEEBUG "${FUNCNAME[0]}" \
 		'echo -e "\nCHECKPOINT: resetTESTData - PRE-delete  \n"' \
@@ -610,17 +492,16 @@ TESTMODE_Reset() {
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* SANITIZES INCOMING FILE, REMOVES BLANK LINES, LINES BEGINNING WITH # & EXTRA WHITESPACE
-#! USAGE: sanitizeVARLIST "INPUTFILE" "OUTPUTFILEHANDLENAME"
-SANITIZE_InputFiles() {
-
+SANITIZE_VARLIST() {
+	#* SANITIZES INCOMING FILE, REMOVES BLANK LINES, LINES BEGINNING WITH # & EXTRA WHITESPACE
+	#! USAGE: sanitizeVARLIST "INPUTFILE" "OUTPUTFILEHANDLENAME"
 	DEEBUG "${FUNCNAME[0]}"
 
 	local inFILE="${1}"
 	local outFILE="${2}"
 
 	if [[ ! -f "$inFILE" ]]; then
-		printf "Error: Configuration file '%s' not found.\n" "$inFILE" >&2
+		printf "Error: VARLIST file '%s' not found.\n" "$inFILE" >&2
 		return 1
 	fi
 
@@ -641,11 +522,43 @@ SANITIZE_InputFiles() {
 
 }
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SANITIZE_ARGFILE() {
+	#* SANITIZES INCOMING FILE, REMOVES BLANK LINES, LINES BEGINNING WITH # & EXTRA WHITESPACE
+	#! USAGE: sanitizeVARLIST "INPUTFILE" "OUTPUTFILEHANDLENAME"
+
+	DEEBUG "${FUNCNAME[0]}"
+
+	local inFILE="${1}"
+	local outFILE="${2}"
+
+	if [[ ! -f "$inFILE" ]]; then
+		printf "Error: ARGFile '%s' not found.\n" "$inFILE" >&2
+		return 1
+	fi
+
+	#* Temp file to avoid overwriting incoming file.
+	#outFILE="$(mktemp --suffix=".argfile" "${TMPDIR:-/run/user/$myUID/}unexif.${outFILEname}.SANITIZED.${RndStr}.XXX")"
+
+	#* Strip blank lines and lines starting with # (comments)
+	#* Strip tabs and whitespace
+	#* Sort and remove  duplicates.
+	LC_ALL=C grep -Ev "^#|^$" "${inFILE}" |
+		sed 's/[[:blank:]]*$//' >"${outFILE}"
+	#sort -u -o "${outFILE}"
+
+	#! HACK TO RETURN VARIABLE NAME AS REQUESTED IN THE PARAMETER
+	#declare -g "$outFILEname=$outFILE"
+
+	#FilesToCleanup+=("${outFILE}")
+
+}
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# VARLIST_SPLIT_ITEMS_and_DESCRIPTIONS() {
 # #* SPLITS A SANITIZED VARLIST INTO LIST OF ITEMS AND ITEM DESCRIPTIONS
 # #! USAGE: splitVARLIST "SANITIZED_VARLIST_FILE"
-# VARLIST_SPLIT_ITEMS_and_DESCRIPTIONS() {
 
 # 	DEEBUG "${FUNCNAME[0]}"
 
@@ -667,10 +580,10 @@ SANITIZE_InputFiles() {
 # }
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* EXPORTS KEYNAMES FROM VARS TO ENV AND/OR FILE
-#! USAGE:  VARLIST_CREATE_LIST_of_KEYNAMES_as_VARNAMES "$INPUT_FILE" "$OUTPUT_FILE"
-#~ EXAMPLE:VARLIST_CREATE_LIST_of_KEYNAMES_as_VARNAMES "${VARLIST_items}" "${VARLIST_KEYNAMES_as_VARIABLES_WHITELIST}" "Blank for newlines per line, 1 for no newline"
 VARLIST_EXPORT_KeysAsVariables() {
+	#* EXPORTS KEYNAMES FROM VARS TO ENV AND/OR FILE
+	#! USAGE:  VARLIST_CREATE_LIST_of_KEYNAMES_as_VARNAMES "$INPUT_FILE" "$OUTPUT_FILE"
+	#~ EXAMPLE:VARLIST_CREATE_LIST_of_KEYNAMES_as_VARNAMES "${VARLIST_items}" "${VARLIST_KEYNAMES_as_VARIABLES_WHITELIST}" "Blank for newlines per line, 1 for no newline"
 
 	DEEBUG "${FUNCNAME[0]} - INFILE: ${1} - OUTFILE: ${2} "
 
@@ -702,10 +615,10 @@ VARLIST_EXPORT_KeysAsVariables() {
 }
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* READS VARLIST FILE AND CAN EXPORT DIRECTLY TO ENVIRONMENT AND/OR CREATE A SCRIPT TO SOURCE/RUN MANUALLY
-#! USAGE: VARLIST_EXPORT_KeyValuePairs "INPUT_VARLIST_FILE" "EXPORT-TO-ENVIRONMENT,REQUIRED, BOOLEAN" "EXPORT-SCRIPT-FILENAME"
-#~ EXAMPLE: VARLIST_EXPORT_KeyValuePairs "${VARLIST_Sanitized}" "False" "${VARLIST_EXPORT_TO_ENV_SCRIPT}"
 VARLIST_EXPORT_KeyValuePairs() {
+	#* READS VARLIST FILE AND CAN EXPORT DIRECTLY TO ENVIRONMENT AND/OR CREATE A SCRIPT TO SOURCE/RUN MANUALLY
+	#! USAGE: VARLIST_EXPORT_KeyValuePairs "INPUT_VARLIST_FILE" "EXPORT-TO-ENVIRONMENT,REQUIRED, BOOLEAN" "EXPORT-SCRIPT-FILENAME"
+	#~ EXAMPLE: VARLIST_EXPORT_KeyValuePairs "${VARLIST_Sanitized}" "False" "${VARLIST_EXPORT_TO_ENV_SCRIPT}"
 
 	DEEBUG "${FUNCNAME[0]}"
 
@@ -740,51 +653,51 @@ VARLIST_EXPORT_KeyValuePairs() {
 }
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* CHECKS EXPORTED VARIABLES AND VALUES
-#! USAGE:
-# TODO FINISH THIS VARLIST_EXPORT_VALIDATOR FUNCTION
-# VARLIST_EXPORT_Validate() {
+VARLIST_EXPORT_Validate() {
+	#* CHECKS EXPORTED VARIABLES AND VALUES
+	#! USAGE:
+	# TODO FINISH THIS VARLIST_EXPORT_VALIDATOR FUNCTION
 
-# 	DEEBUG "${FUNCNAME[0]}"
+	# 	DEEBUG "${FUNCNAME[0]}"
 
-# 	in_FILE="${1}"
+	# 	in_FILE="${1}"
 
-# 	echo -e "\n ━━━ [ ${FUNCNAME[0]} ] for ${in_FILE}       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+	# 	echo -e "\n ━━━ [ ${FUNCNAME[0]} ] for ${in_FILE}       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# 	while read -r LINE; do
+	# 	while read -r LINE; do
 
-# 		echo "${LINE} evaluates to : $(eval "echo ${LINE}")"
+	# 		echo "${LINE} evaluates to : $(eval "echo ${LINE}")"
 
-# 	done <"${in_FILE}"
-#echo "${VARLIST_KEYNAMES_as_VARIABLES_ALL}"
-#read -p "echo"
-#cat "${VARLIST_KEYNAMES_as_VARIABLES_ALL}"
-#read -p "cat"
-#export -p | grep -si "VARLIST\|_*_"
-#read -p "export"
+	# 	done <"${in_FILE}"
+	#echo "${VARLIST_KEYNAMES_as_VARIABLES_ALL}"
+	#read -p "echo"
+	#cat "${VARLIST_KEYNAMES_as_VARIABLES_ALL}"
+	#read -p "cat"
+	#export -p | grep -si "VARLIST\|_*_"
+	#read -p "export"
 
-# 	echo -e "\n ━━━ [ ${FUNCNAME[0]} ] for ${in_FILE} - END ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-# 		# #* WORKED FINE # Load with contents of file, newline delimited
-# 		# WList=$(<"${VARLIST_KEYNAMES_as_VARIABLES_ALL}")
-# 		# envsubst "${WList}" < "${ARGFILE_Sanitized}"
-# 		# read -p "wlist 1"
+	# 	echo -e "\n ━━━ [ ${FUNCNAME[0]} ] for ${in_FILE} - END ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+	# 		# #* WORKED FINE # Load with contents of file, newline delimited
+	# 		# WList=$(<"${VARLIST_KEYNAMES_as_VARIABLES_ALL}")
+	# 		# envsubst "${WList}" < "${ARGFILE_Sanitized}"
+	# 		# read -p "wlist 1"
 
-# 		# #* WORKED FINE # Load with contents of file, strangly no delimiters
-# 		# WList2=$(<"${VARLIST_KEYNAMES_as_VARIABLES_WHITELIST}")
-# 		# envsubst "${WList2}" < "${ARGFILE_Sanitized}"
-# 		# read -p "wlist 2"
+	# 		# #* WORKED FINE # Load with contents of file, strangly no delimiters
+	# 		# WList2=$(<"${VARLIST_KEYNAMES_as_VARIABLES_WHITELIST}")
+	# 		# envsubst "${WList2}" < "${ARGFILE_Sanitized}"
+	# 		# read -p "wlist 2"
 
-# 		#* WORKED FINE # Direct conversion of file
-# 		envsubst "$(<"${VARLIST_KEYNAMES_as_VARIABLES_WHITELIST}")" < "${ARGFILE_Sanitized}" >> "${ARGFILE_Final}"
-# 		nano "${ARGFILE_Final}"
-
-# }
+	# 		#* WORKED FINE # Direct conversion of file
+	# 		envsubst "$(<"${VARLIST_KEYNAMES_as_VARIABLES_WHITELIST}")" < "${ARGFILE_Sanitized}" >> "${ARGFILE_Final}"
+	# 		nano "${ARGFILE_Final}"
+	true
+}
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* RE EXPORTS CERTAIN VARS THAT ARE DYNAMIC BASED ON USER CHOICES
-#! USAGE:  VARLIST_HandleSPECIALVARS "BOOL(export to env)""${VARLIST_EXPORT_TO_ENV_SCRIPT}"
 VARLIST_EXPORT_SpecialVariablesHandler() {
+	#* RE EXPORTS CERTAIN VARS THAT ARE DYNAMIC BASED ON USER CHOICES
+	#! USAGE:  VARLIST_HandleSPECIALVARS "BOOL(export to env)""${VARLIST_EXPORT_TO_ENV_SCRIPT}"
 
 	DEEBUG "${FUNCNAME[0]}"
 
@@ -812,16 +725,19 @@ VARLIST_EXPORT_SpecialVariablesHandler() {
 	fi
 
 	#* $_VERBOSE_ ###################################################################
+
 	if [[ "$VERBOSE" == "True" ]]; then
 
 		KEYandVALUEpair_to_reEXPORT="_VERBOSE_="-v${vLVL}""
+		VERBOSE="-v${vLVL}"
 		echo "export ${KEYandVALUEpair_to_reEXPORT}" >>"${out_FILE}"
 
 		if [[ ${bool_IMMEDIATE_EXPORT} == "True" ]]; then export "${KEYandVALUEpair_to_reEXPORT?}"; fi
 
 	else
 
-		KEYandVALUEpair_to_reEXPORT="_VERBOSE_=\"#* VERBOSE SET TO False\""
+		KEYandVALUEpair_to_reEXPORT="_VERBOSE_=\"#* VERBOSE OUTPUT OFF \""
+		VERBOSE="#* VERBOSE OUTPUT OFF "
 		echo "export ${KEYandVALUEpair_to_reEXPORT}" >>"${out_FILE}"
 		if [[ ${bool_IMMEDIATE_EXPORT} == "True" ]]; then export "${KEYandVALUEpair_to_reEXPORT?}"; fi
 
@@ -832,12 +748,14 @@ VARLIST_EXPORT_SpecialVariablesHandler() {
 	if [[ "$RECURSE" == "True" ]]; then
 
 		KEYandVALUEpair_to_reEXPORT="_RECURSE_=\"-r\""
+		RECURSE="-r"
 		echo "export ${KEYandVALUEpair_to_reEXPORT}" >>"${out_FILE}"
 		if [[ ${bool_IMMEDIATE_EXPORT} == "True" ]]; then export "${KEYandVALUEpair_to_reEXPORT?}"; fi
 
 	else
 
-		KEYandVALUEpair_to_reEXPORT='_RECURSE_="#* RECURSE SET TO False"'
+		KEYandVALUEpair_to_reEXPORT='_RECURSE_="#* RECURSE MODE OFF"'
+		RECURSE="#* RECURSE MODE OFF"
 		echo "export ${KEYandVALUEpair_to_reEXPORT}" >>"${out_FILE}"
 		if [[ ${bool_IMMEDIATE_EXPORT} == "True" ]]; then export "${KEYandVALUEpair_to_reEXPORT?}"; fi
 
@@ -845,15 +763,20 @@ VARLIST_EXPORT_SpecialVariablesHandler() {
 	#* ###################################################################
 
 	#* $_KEEPNAME_ ###################################################################
-	if [[ "$KEEPName" == "True" ]]; then
+	if [[ "$KEEPNAME" == "True" ]]; then
 
-		KEYandVALUEpair_to_reEXPORT="_KEEPNAME_="${exifToolBaseNameSeperator}\$basename""
+		#KEYandVALUEpair_to_reEXPORT="_KEEPNAME_=\"${exifToolBaseNameSeperator}\$basename\""
+		#KEEPNAME="${exifToolBaseNameSeperator}\${basename}"
+		KEYandVALUEpair_to_reEXPORT="_KEEPNAME_=\"${exifToolBaseNameSeperator}%f\""
+		KEEPNAME="${exifToolBaseNameSeperator}%f"
+
 		echo "export ${KEYandVALUEpair_to_reEXPORT}" >>"${out_FILE}"
 		if [[ ${bool_IMMEDIATE_EXPORT} == "True" ]]; then export "${KEYandVALUEpair_to_reEXPORT?}"; fi
 
 	else
 
-		KEYandVALUEpair_to_reEXPORT="_KEEPNAME_="""
+		KEYandVALUEpair_to_reEXPORT='_KEEPNAME_=""'
+		KEEPNAME=""
 		echo "export ${KEYandVALUEpair_to_reEXPORT}" >>"${out_FILE}"
 		if [[ ${bool_IMMEDIATE_EXPORT} == "True" ]]; then export "${KEYandVALUEpair_to_reEXPORT?}"; fi
 
@@ -869,10 +792,10 @@ VARLIST_EXPORT_SpecialVariablesHandler() {
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* CREATES TABLE OF CONTENTS REFERENCE DOC FOR ALL VARLIST ENTRIES. APPEND TO  ${ARGFILE_Final} & "${ARGFILE_BASE_Template}"
-#! USAGE: VARLIST_CREATE_TOCdoc "LISTOFVARIABLE_FILE" "OUTPUT_FILE"
-#~ EXAMPLE:  VARLIST_CREATE_TOCdoc "${VARLIST_AllVARKeys}" "${VARLIST_TOCdoc}"
 VARLIST_CREATE_TOCdoc() {
+	#* CREATES TABLE OF CONTENTS REFERENCE DOC FOR ALL VARLIST ENTRIES. APPEND TO  ${ARGFILE_Final} & "${ARGFILE_BASE_Template}"
+	#! USAGE: VARLIST_CREATE_TOCdoc "LISTOFVARIABLE_FILE" "OUTPUT_FILE"
+	#~ EXAMPLE:  VARLIST_CREATE_TOCdoc "${VARLIST_AllVARKeys}" "${VARLIST_TOCdoc}"
 
 	DEEBUG "${FUNCNAME[0]}"
 
@@ -968,6 +891,7 @@ TEMPFILES_Cleanup() {
 	done
 	#* -------------------------------------------------------------------------------------
 
+
 	if [[ -z "${Cleanup_TempFiles}" ]] || [[ "${Cleanup_TempFiles}" == "False" ]]; then
 
 		echo -e "Cleanup of temporary files disabled or unset."
@@ -990,8 +914,8 @@ TEMPFILES_Cleanup() {
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#! USAGE: FORMAT_TextOutput "LEFT COLUMN VALUE" "MIDDLE COLUMN VALUE" "RIGHT COLUMN VALUE" "L-COLUMN SIZE IN CHARS" "MID-COLUMN SIZE IN  CHARS"
 FORMAT_TextOutput() {
+	#! USAGE: FORMAT_TextOutput "LEFT COLUMN VALUE" "MIDDLE COLUMN VALUE" "RIGHT COLUMN VALUE" "L-COLUMN SIZE IN CHARS" "MID-COLUMN SIZE IN  CHARS"
 
 	#DEEBUG "${FUNCNAME[0]}"
 
@@ -1023,10 +947,10 @@ FORMAT_TextOutput() {
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* CREATES ARGFILE TEMPLATE CONTAINING ALL VARIABLES + TOC FOR TESTING OR AS A STARTING POINT.
-#! USAGE:  ARGFILE_CREATE_BASE_Template "LISTOFVARIABLENAMES_FILE" "TABLEOFCONTENTS-REFERENCE_FILE" "OUTPUT_TEMPLATE_FILE"
-#~ EXAMPLE: ARGFILE_CREATE_BASE_Template "${VARLIST_KEYNAMES_as_VARIABLES_ALL}" "${VARLIST_TOCdoc}" "${ARGFILE_BASE_Template}"
 ARGFILE_CREATE_BASE_Template() {
+	#* CREATES ARGFILE TEMPLATE CONTAINING ALL VARIABLES + TOC FOR TESTING OR AS A STARTING POINT.
+	#! USAGE:  ARGFILE_CREATE_BASE_Template "LISTOFVARIABLENAMES_FILE" "TABLEOFCONTENTS-REFERENCE_FILE" "OUTPUT_TEMPLATE_FILE"
+	#~ EXAMPLE: ARGFILE_CREATE_BASE_Template "${VARLIST_KEYNAMES_as_VARIABLES_ALL}" "${VARLIST_TOCdoc}" "${ARGFILE_BASE_Template}"
 
 	DEEBUG "${FUNCNAME[0]}"
 
@@ -1058,10 +982,10 @@ ARGFILE_CREATE_BASE_Template() {
 }
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-#* GETS BASENAME OF PATH/FILE STRING THAT MAY HAVE MULTIPLE LAYERS OF PERIOD SEPERATORS
-#! USAGE: extractComplexBASENAME "STRING-OR-VARIABLE" "NUMBER OF REMOVED  DOTS"
-#~ EXAMPLE: extractComplexBASENAME "/A/PATH/AND/COMPLEXFILENAME.WITH.NON.DESCRIPT.EXTENSIONS "4"
 extractComplexBASENAME() {
+	#* GETS BASENAME OF PATH/FILE STRING THAT MAY HAVE MULTIPLE LAYERS OF PERIOD SEPERATORS
+	#! USAGE: extractComplexBASENAME "STRING-OR-VARIABLE" "NUMBER OF REMOVED  DOTS"
+	#~ EXAMPLE: extractComplexBASENAME "/A/PATH/AND/COMPLEXFILENAME.WITH.NON.DESCRIPT.EXTENSIONS "4"
 
 	#DEEBUG "${FUNCNAME[0]}"
 
@@ -1086,8 +1010,8 @@ extractComplexBASENAME() {
 }
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#! MAIN WORK LOOP FOR RUNNING EXIFTOOL WITH YOUR ARGFILES
 ProcessUserTemplates_PreInit() {
+	#! MAIN WORK LOOP FOR RUNNING EXIFTOOL WITH YOUR ARGFILES
 
 	DEEBUG "${FUNCNAME[0]}"
 
@@ -1095,7 +1019,7 @@ ProcessUserTemplates_PreInit() {
 	#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 	TEMPFILES_Initialize
 	#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-	SANITIZE_InputFiles "${f_externalVarlist}" "${VARLIST_Sanitized}"
+	SANITIZE_VARLIST "${f_externalVarlist}" "${VARLIST_Sanitized}"
 	#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 	VARLIST_CREATE_TOCdoc "${VARLIST_Sanitized}" "${VARLIST_TOCdoc}"
 	#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1119,12 +1043,12 @@ ProcessUserTemplates_PreInit() {
 	#VARLIST_EXPORT_Validate "${VARLIST_KEYNAMES_as_VARIABLES_ALL}"
 	#VARLIST_EXPORT_Validate "${VARLIST_KEYNAMES_as_VARIABLES_WHITELIST}"
 }
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━���━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#* PROCESSES USER TEMPLATES, THEN RUNS EXIFTOOL WITH THE FINALIZED ARGLIST. ALSO GENERATES A UPDATED TEMPLATE FOR USER CONVIENIENCE.
-#! USAGE:  prepARGFILE_Template  "$ARGFiles_PATH/$template"
 ProcessUserTemplates() {
+	#* PROCESSES USER TEMPLATES, THEN RUNS EXIFTOOL WITH THE FINALIZED ARGLIST. ALSO GENERATES A UPDATED TEMPLATE FOR USER CONVIENIENCE.
+	#! USAGE:  prepARGFILE_Template  "$ARGFiles_PATH/$template"
 
 	DEEBUG "${FUNCNAME[0]}"
 
@@ -1142,7 +1066,7 @@ ProcessUserTemplates() {
 		FilesToCleanup+=("${ARGFILE_Sanitized}")
 
 		#* SANITIZE USER ARGFILE TEMPLATES
-		SANITIZE_InputFiles "${ARGFiles_PATH}/${TEMPLATE}" "${ARGFILE_Sanitized}"
+		SANITIZE_ARGFILE "${ARGFiles_PATH}/${TEMPLATE}" "${ARGFILE_Sanitized}"
 
 		ARGFILE_Final="${tmpPATHandPREFIX}__ARGFILE__FINAL-${UserTemplateBASENAME}.argfile"
 		#* ADD HEADER TO FINAL ARGFILE
@@ -1159,7 +1083,6 @@ ProcessUserTemplates() {
 
 		#* DO THE VARIABLE SUBSTITUTION
 		envsubst "$(<"${VARLIST_KEYNAMES_as_VARIABLES_WHITELIST}")" <"${ARGFILE_Sanitized}" >>"${ARGFILE_Final}"
-
 		#* ADD  TABLE OF CONTENTS / REFERENCE TO END OF FINAL ARGFILE TO REVIEW IF KEEPING TEMP FILES.
 		cat "${VARLIST_TOCdoc}" >>"${ARGFILE_Final}"
 
@@ -1172,7 +1095,11 @@ ProcessUserTemplates() {
 
 		#* EXIFTOOL
 		echo -e "STARTING EXIFTOOL PROCESSING.\n\n"
-		#$exifToolCMD -@ "${ARGFILE_Final}"
+
+		#eval "echo "$exifToolCMD -@ "${ARGFILE_Final}""
+
+		echo -e "\nEXIFTOOL COMMAND:\n$exifToolCMD -@ ${ARGFILE_Final}\n"
+		$exifToolCMD -@ "${ARGFILE_Final}"
 
 	done
 
@@ -1223,6 +1150,83 @@ SORT_MEDIA() {
 }
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+ARGFile_LoadUserTemplates() {
+
+	if [[ ${#ARGFileTemplatesList[@]} -gt 0 ]]; then
+
+		echo -e "\nARGFileTemplatesList manually defined, won't load from ${ARGFiles_PATH}"
+
+	else
+
+		#* Enable nullglob to prevent literal string assignment on no match
+		shopt -s nullglob
+
+		#* Define the target extension
+		ARGFile_EXT="argfile.sh"
+
+		#* Load files into the array
+		#ARGFileTemplatesList+=($(basename "${ARGFiles_PATH}"/*."$ARGFile_EXT"))
+		ARGFileTEMPLIST=("${ARGFiles_PATH}"/*."$ARGFile_EXT")
+
+		#echo "${ARGFileTemplatesListTMP[@]}"
+
+		echo -e "ARGFile Templates:"
+		for t in "${ARGFileTEMPLIST[@]}"; do
+			ARGFileTemplatesList+=("$(basename "${t}")")
+			echo -e "$(basename "${t}")"
+		done
+
+		#* Disable nullglob to restore default shell behavior
+		shopt -u nullglob
+
+		#* Functional check for future expansion
+		if [[ ${#ARGFileTemplatesList[@]} -gt 0 ]]; then
+			printf 'Successfully loaded %d files.\n' "${#ARGFileTemplatesList[@]}"
+		else
+			printf 'No .%s files found in the current directory.\n' "$ARGFile_EXT"
+		fi
+
+	fi
+
+	if [[ "$TESTMODE" == "True" ]] || [[ "$TESTMODERESET" == "True" ]]; then
+
+		if [[ ${#TESTMODEARGFileTemplatesList[@]} -gt 0 ]]; then
+
+			echo -e "\nTESTMODEARGFileTemplatesList manually defined, won't load from ${ARGFiles_PATH}"
+
+		else
+
+			#* Enable nullglob to prevent literal string assignment on no match
+			shopt -s nullglob
+
+			#* Define the target extension
+			ARGFile_EXT="argfile.sh"
+
+			#* Load files into the array
+			#ARGFileTemplatesList+=($(basename "${ARGFiles_PATH}"/*."$ARGFile_EXT"))
+			TESTMODEARGFileTEMPLIST=("${ARGFiles_PATH}"/*."$ARGFile_EXT")
+
+			#echo "${TESTMODEARGFileTemplatesListTMP[@]}"
+			echo -e "ARGFile Templates (TESTMODE):"
+			for t in "${TESTMODEARGFileTEMPLIST[@]}"; do
+				TESTMODEARGFileTemplatesList+=("$(basename "${t}")")
+				echo -e "$(basename "${t}")"
+			done
+
+			#* Disable nullglob to restore default shell behavior
+			shopt -u nullglob
+
+			#* Functional check for future expansion
+			if [[ ${#TESTMODEARGFileTemplatesList[@]} -gt 0 ]]; then
+				printf 'Successfully loaded %d files.\n' "${#TESTMODEARGFileTemplatesList[@]}"
+			else
+				printf 'No .%s files found in ${ARGFiles_PATH}.\n' "$ARGFile_EXT"
+			fi
+
+		fi
+	fi
+}
+
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #! #### END OF FUNCTION DEFINITIONS  ##########################################
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1230,14 +1234,104 @@ SORT_MEDIA() {
 # #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # #* MAIN PROGRAM LOOP BELOW
 # #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-scriptINIT "$@"
+#scriptINIT "$@"
+#optionsMenuSetup "$@"
 
+#echo "$thisCONFIG"
+#echo "premenu $VERBOSE"
 
+#* We want to load config first to let switches override
+loadCONFIG
+optionsMenuSetup "$@"
+echo -e "\n\nPATH: ${SCRIPT_DIR}"
+echo -e "CONFIG: ${thisCONFIG}\n\n"
+#echo -e "PATH: ${0}"
+sleep .5
+echo -e "-----------------------------------------------------------------------------"
+ARGFile_LoadUserTemplates
+echo -e "-----------------------------------------------------------------------------\n"
+
+prepInternalSettings
+echo -e "-----------------------------------------------------------------------------\n"
+
+#settingsReport
+echo -e "-----------------------------------------------------------------------------\n"
 SORT_MEDIA
-settingsReport
+echo -e "-----------------------------------------------------------------------------\n"
 TEMPFILES_Cleanup
 
+
+find "${SRCDIR}" -type f -empty -delete
+find "${SRCDIR}" -type d -empty -delete
+# echo "$KEEPNAME"
+# echo "$_KEEPNAME_"
+# read -p "asdfasdf"
+echo -e "-----------------------------------------------------------------------------\n"
+
 exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # #settingsReport
 

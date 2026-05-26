@@ -1,40 +1,50 @@
 #!/bin/bash
-# shellcheck disable=all
+#shellcheck disable=all
+#!######################################################################################
+#! DESCRIPTION: ALL VARIABLE SUBSTITUTIONS AND SWITCHES WE WISH TO PROGRAMMATICALLY USE IN THE ARGUMENT FILE ARE DEFINED HERE.
+#!######################################################################################
+#!  TODO VARNAME + VARNAMEdesc WILL AUTO POPULATE DOCUMENTATION AND ARGFILES.(PARTIALLY COMPLETE)
+#!  TODO VALIDATE PROPER WORKING OF THE FOLLOWING SPECIAL VARS
+#!       -   $_VERBOSE_
+#!       -   $_KEEPNAME_
+#!       -   $_SRCDIR_
+#!       -   $_DSTDIR_
+#!  TODO FINALIZE + VALIDATE $_EZ_START_, $_EZ_FINALIZE_
+#!  TODO DOCUMENT/VALIDATE THE NEED TO USE THIS FORMAT "$(echo -e "-d\n MISC SWITCHES")", DOCUMENT WHEN/WHY
+#!  TODO DOCUMENT/VALIDATE WHEN TO USE THE "" VS ''
+#!  TODO SANITIZE DIR/FILENAMES? '${TAGNAME;tr(/\?*:|\"<>\\//)()d;$_="[$_]"}'
+#!  COMPOSITE VARS (CONTAINING OTHER TEMPLATE VARIABLES) MUST BE NAMED TO RUN LAST AFTER ALL COMPONENTS VARIABLES ARE EXPORTED, AKA NAME THEM ZZxxxxxxx
+#!######################################################################################
+#!###############################################################################
+#! RE-SORT THIS FILE USIING THIS COMMAND:
+#!/bin/bash
+#! SRC_LIST="./VARLIST"
+#! SORTED_LIST="./VARLIST.SORTED"
+#! SEGMENT HEADER FROM SORT
+#! cat ${SRC_LIST} | grep -si "#!\|#shellcheck" >${SORTED_LIST}
+#! SORT THE REST AND APPEND
+#! cat ${SRC_LIST} | grep -siv "#!\|#shellcheck" | LC_ALL=C sort -u >>${SORTED_LIST}
+#!#####################################################################################
 
-#! 	###############################################################################
-#! 	#! ALL VARIABLES, SUBSTITUTIONS AND SWITCHES WE WISH TO PROGRAMMATICALLY USE
-#! 	#! IN THE ARGUMENT FILE ARE DEFINED HERE.
-#! 	# TODO VARNAME + VARNAMEdesc WILL AUTO POPULATE DOCUMENTATION AND ARGFILES.
-#! 	# TODO PARTIAL, NOT QUITE COMPLETE
-#! 	###############################################################################
-#! RESORT THIS FILE USIING THIS COMMAND: cat ./VARLIST |grep -siv "#!" | LC_ALL=C sort -u -o ./VARLIST.SORTED
 
-#_FIXD_DIR_TEMPLATE_A_="$(echo -e "$_DIRSTART_$_DSTDIR_/$_MAKE_$_ANDROIDMANUFACTURER_$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_/$_EXT_/$_YEARMONTH_")"
-#_FIXD_DIR_TEMPLATE_Adesc_="#TBD"
-#_FIXD_DIR_TEMPLATE_B_="$(echo -e "$_DIRSTART_$_DSTDIR_/$_MAKE_$_ANDROIDMANUFACTURER_$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_/$_EXT_/$_YEARMONTH_")"
-#_FIXD_DIR_TEMPLATE_C_="$_DIRSTART_$_DSTDIR_/$_MAKE_$_ANDROIDMANUFACTURER_$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_/$_EXT_/$_YEARMONTH_"
-#_FIXD_DIR_TEMPLATE_C_="\$_DIRSTART_\$_DSTDIR_/\$_MAKE_\$_ANDROIDMANUFACTURER_\$_MODEL_\$_ANDROIDMODEL_\$_XIAOMIPRODUCTNAME_/\$_EXT_/\$_YEARMONTH_"
-#_FIXD_DIR_TEMPLATE_D_="\$DIRSTART\$DSTDIR/\$MAKE\$ANDROIDMANUFACTURER\$MODEL\$ANDROIDMODEL\$XIAOMIPRODUCTNAME/\$EXT/\$YEARMONTH"
-#_FIXD_DIR_TEMPLATE_E_="$DIRSTART$DSTDIR/$MAKE$ANDROIDMANUFACTURER$MODEL$ANDROIDMODEL$XIAOMIPRODUCTNAME/$EXT/$YEARMONTH"
-_FIXD_NAME_TEMPLATE_A_="$(echo -e "$_FNAMESTART_$_SDATEFULL_$_IMAGESIZE_$_KEEPNAME_$_COUNTER_.$_EXT_")"
-_FIXD_NAME_TEMPLATE_Adesc_="#TBD"
 _ADDTAG_IMAGEHASH_="$(echo -e "-api\nImageHashType=$hashALGO\n-XMP:OriginalImageHash<ImageDataHash")"
 _ADDTAG_IMAGEHASHdesc_="#* Creates imagehash tag."
-_ADDTAG_PRESERVEDFILENAME_="-XMP-xmpMM:PreservedFileName<filename"
-_ADDTAG_PRESERVEDFILENAMEdesc_="#* Adds the PreservedFileName tag."
 _ADDTAG_ORIGINALFILENAME_="-XMP-getty:OriginalFilename<filename"
 _ADDTAG_ORIGINALFILENAMEdesc_="#* Adds the OriginalFileName tag."
-
-
+_ADDTAG_PRESERVEDFILENAME_="-XMP-xmpMM:PreservedFileName<filename"
+_ADDTAG_PRESERVEDFILENAMEdesc_="#* Adds the PreservedFileName tag."
+_ADD_PAUSE_="$(echo -e "-pause\n-execute")"
 _ANDROIDMANUFACTURER_='${Keys:AndroidManufacturer;$_="[$_]"}'
 _ANDROIDMANUFACTURERdesc_="#* Manufacturer"
 _ANDROIDMODEL_='${Keys:AndroidModel;$_="[$_]"}'
 _ANDROIDMODELdesc_="#* Model of android phone."
 _COUNTER_='%+3c'
 _COUNTERdesc_="#* Counter (Filename collision avoidance.)"
-_DDATEFORMAT_="$(echo -e "-d\n%Y-%m-%d_%H.%M.%S__")"
+_DDATEFORMAT_="$(echo -e "-d\n%Y.%m.%d-%H%M%S__")"
+#_DDATEFORMAT_="$(echo -e "-d\n%Y-%m-%d_%H.%M.%S__")"
 _DDATEFORMATdesc_="#* (Prefer per dir option) -d/-dateFormat - Format for date/time values"
-_DIRSTART_="-Directory<"
+#_DIRSTART_='-Directory='
+_DIRSTART_='-Directory<'
 _DIRSTARTdesc_="#* Directory output destination start command."
 _DSTDIR_="$DSTDIR"
 _DSTDIRdesc_="#* DESTINATION DIRECTORY: OUTPUT directory for processed and renamed images"
@@ -42,27 +52,30 @@ _EXECUTE_="-execute"
 _EXECUTEdesc_="#* RUN EVERYTHING UP TO HERE AS A SPECIFIC COMMAND SET"
 _EXTLIST_="$EXTList"
 _EXTLISTdesc_="#* Extensions to work on"
-_EXT_='%e'
+_EXT_='%le'
 _EXTdesc_="#* File Extension"
 _EZ_SETTINGS_META_="$(echo -e "$_SRCDIR_\n-execute\n")"
 _EZ_SETTINGS_METAdesc_="#TBD"
 _EZ_SETTINGS_PROTO_="$(echo -e "-m\n-P\n-q\n-q\n$_EXTLIST_\n--ext\nxmp\n-tagsfromfile\n-overwrite_original\n")"
-# EZ_SETTINGS_PROTO=$_VERBOSE_, $_SUPRESSMINERR_,$_PRESERVE_, $_QUIET_, $_QUIET_, $_EXTLIST_, $_NOXMP_, $_GETTAGSFROMCURRENTFILE_, $_WRITEOVERFILE_
-
 _EZ_SETTINGS_PROTOdesc_="#TBD"
 _FILEORDERFILENAME_="$(echo -e "-fileOrder\n-FileName")"
 _FILEORDERFILENAMEdesc_="#* Process in order of filename. Slow, dont use if possible."
-_FMTLINE_="#############################################################################################################################"
-_FNAMESTART_='-filename<'
-_FNAMESTARTdesc_="#* Rename/move starting with SmartDate function included in the config that came with this script."
-_GETTAGSFROMCURRENTFILE_="$(echo -e "-tagsfromfile\n")"
+_FIXD_NAME_TEMPLATE_A_="$(echo -e "$_FNAMESTART_$_SDATEFULL_$_IMAGESIZE_$_KEEPNAME_$_COUNTER_.$_EXT_")"
+_FIXD_NAME_TEMPLATE_Adesc_="#TBD"
+_FMTLINE_="# ------------------------------------------------------------ #"
+#_FNAMESTART_='-filename<'
+_FNAMESTART_='-filename='
+_FNAMESTARTdesc_="#* RENAME FILE COMMAND START, STANDARD ACCORDING TO DOCUMENTATION, HOWEVER USER EXAMPLES ALMOST ALWAYS USE THE OTHER, EXIFTOOL COMPLAINS HOWEVER FOR SOME FUNCTIONALITIES. TODO DOCUMENT QUIRKS LATER"
+_FNAMESTARTOPT_='-filename<'
+_FNAMESTARTOPTdesc_="#* RENAME FILE COMMAND START, ALTERNATE WAY, THIS PARTICULAR WAY IS NEEDED FOR _SDATEFULL_ TO FUNCTION UNTIL I FIGURE OUT WTF"
+_GETTAGSFROMCURRENTFILE_="$(echo -e "-tagsfromfile\n@")"
 _GETTAGSFROMCURRENTFILEdesc_="#* GETS / SETS TAGS FROM CURRENT FILE "
 _HASHALGORITHM_="${hashALGO}"
 _HASHALGORITHMdesc_="#* Algorithm for creating the XMP:OriginalImageHash tag."
 _IMAGESIZE_='${ImageSize;$_="[$_]"}'
 _IMAGESIZEdesc_="#* Image Size composite tag"
-_KEEPNAME_="$exifToolBaseNameSeperator\$basename"
-_KEEPNAMEdesc_="#* Blank unless -k keepname option enabled, Seperator + original filename if switch set"
+_KEEPNAME_="$KEEPNAME"
+_KEEPNAMEdesc_="#* Blank unless -k keepname option enabled, Separator + original filename if switch set"
 _MAKE_='${Make;$_="[$_]"}'
 _MAKEdesc_="#* Make of Android phone tag."
 _MODEL_='${Model;$_="[$_]"}'
@@ -70,17 +83,28 @@ _MODELdesc_="#* Model of camera/phone"
 _NOEXIFDEST_="NO-EXIF"
 _NOEXIFDESTdesc_="#* FOLDER NAME FOR NOEXIF DESTINATION DIRECTORY: OUTPUT directory for items without EXIF."
 _NOXMP_="$(echo -e "--ext\nxmp")"
-_NOXMPdesc_="#* DO NOT WORK ON XMP FILES # Don't process xmp files, strangely enough used mostly to process xmp files.. lol.. "
+_NOXMPdesc_="#* EXCLUDE WORKING ON XMP FILES (strangely enough used mostly to process xmp files.. lol.. "
 _PRESERVE_="-P"
 _PRESERVEdesc_="#* (-P / -preserve) Preserve file modification date/time"
-_QUIET_="$(echo -e "-q")"
+_QUIET_="-q"
 _QUIETdesc_="#* Quieter output, put twice for very quiet. shhbbyisok"
 _RECURSE_="${RECURSE}"
 _RECURSEdesc_="#* Recurse. If recurse switch set, this will be -r, otherwise null/empty. "
-_SDATEFULL_='${SmartDate;DateFmt("%Y-%m__%d_%H.%M.%S__")}'
-_SDATEFULLdesc_="#* 2020-10-02_14.01.31__ SmartDate full output, used for filename usually."
-_SHHBBYISOK_="$(echo -e "-m\n-q\n-q")"
-_SHHBBYISOKdesc_="#* -m -q -q Supress minor errors and super quiet shortcut tag."
+#_SDATEFULL_='${SmartDate;DateFmt("%Y.%m.%d-%H%M%S__")}'
+#_DDATEFORMAT_="$(echo -e "-d\n%Y.%m.%d-%H%M%S__ Y-%m-%d_%H.%M.%S__")"
+#_DDATEFORMAT_="$(echo -e "-d\n%Y-%m-%d_%H.%M.%S__")"
+
+_SDATEFULL_='${SmartDate;DateFmt("%Y.%m.%d-%H%M%S__")}'
+_SDATEFULLdesc_="#* Directory tag assignment with this using = gets screwy, need to use  < 2020-10-02_14.01.31__ SmartDate full output, used for filename usually."
+
+
+
+_SHHBBY_="$(echo -e "-q\n-q")"
+_SHHBBYdesc_="#* -q/--quiet x 2 for less noisy output."
+_SOFTWARE_='${Software;tr(/\?*:|\"<>\\//)()d;$_=" [$_]"}'
+_SOFTWAREdesc_="#* Software used to modify or create image"
+#_SOFTWARE_='${Software;$_="[$_]"}'
+#_SOFTWARE_='${Software;s/[\/\\\\]//g;$_="[$_]" if $_}' # the if seems not needed
 _SRCDIR_="$SRCDIR"
 _SRCDIRdesc_="#* SOURCE DIRECTORY: INPUT directory containing unprocessed media."
 _SRCFILE_EXT_XMP_="$(echo -e "-srcfile\n%d%f.%e.xmp")"
@@ -89,7 +113,12 @@ _SRCFILE_XMP_="$(echo -e '-srcfile\n%d%f.xmp')"
 _SRCFILE_XMPdesc_="#* DIRECT ACTIONS TO FILENAME.XMP THIS FILE INSTEAD OF CURRENT FILE"
 _SUPRESSMINERR_="-m"
 _SUPRESSMINERRdesc_="#* Suppress minor errors, if used, must be used equally (or none) on XMP + media argfiles. Otherwise problems."
-_VERBOSE_=" "
+_TARGETFILE_EXT_XMP_="$(echo -e "-srcfile\n%d%f.%e.xmp")"
+_TARGETFILE_EXT_XMPdesc_="#* DIRECT ACTIONS TO FILENAME.EXT.XMP THIS FILE INSTEAD OF CURRENT FILE"
+_TARGETFILE_XMP_="$(echo -e '-srcfile\n%d%f.xmp')"
+_TARGETFILE_XMPdesc_="#* DIRECT ACTIONS TO FILENAME.XMP THIS FILE INSTEAD OF CURRENT FILE"
+_UTF8_="$(echo -e "-charset\nutf8")"
+_VERBOSE_="$VERBOSE"
 _VERBOSEdesc_="# When verbose switch set, this will be -v[0...5], 5 being most verbose. Set by VLevel "
 _WRITEMODE_CREATE_INSERTMISSING_="$(echo -e "-wm\ncg")"
 _WRITEMODE_CREATE_INSERTMISSINGdesc_="#* write mode CREATE AND ADD ONLY NEW TAGS "
@@ -101,3 +130,40 @@ _YEARMONTH_='${SmartDate;DateFmt("%Y.%m-[%B]")}'
 _YEARMONTHdesc_="#* SmartDate function located in config"
 _YEAR_='${SmartDate;DateFmt("%Y")}'
 _YEARdesc_="#* YEAR Folder"
+
+_ZZ_EZ_POST_="$(echo -e "$_RECURSE_\n$_SRCDIR_\n$_EXECUTE_")"
+_ZZ_EZ_POSTdesc_="#* COMMON END OPTIONS PER TEMPLATE: ( _RECURSE_ _SRCDIR_ _EXECUTE_ ) "
+
+_ZZ_EZ_PRE_="$(echo -e "$_VERBOSE_\n$_UTF8_\n$_SUPRESSMINERR_\n$_PRESERVE_\n$_EXTLIST_\n$_NOXMP_\n$_GETTAGSFROMCURRENTFILE_\n$_WRITEOVERFILE_")"
+_ZZ_EZ_PREdesc_="#* COMMON START OPTIONS PER TEMPLATE: ( _VERBOSE_ _UTF8_ _SUPRESSMINERR_ _PRESERVE_ _EXTLIST_ _NOXMP_ _GETTAGSFROMCURRENTFILE_ _WRITEOVERFILE_ )"
+
+_ZZ_EZ_PRE_NO_GETTAGS_="$(echo -e "$_VERBOSE_\n$_UTF8_\n$_SUPRESSMINERR_\n$_PRESERVE_\n$_EXTLIST_\n$_NOXMP_\n$_WRITEOVERFILE_")"
+_ZZ_EZ_PRE_NO_GETTAGSdesc_="#* SPECIAL USE CASE FOR WHEN WE RENAME sidecar.xmp to sidecar.ext.xmp to not rewrite xmp internal data"
+
+
+
+
+
+_ZZ_FIXD_FILENAME_TEMPLATE_="$_FNAMESTARTOPT_$_SDATEFULL_$_IMAGESIZE_$_KEEPNAME_$_COUNTER_.$_EXT_"
+_ZZ_FIXD_FILENAME_TEMPLATEdesc_="#* STANDARD FILE NAME TEMPLATE"
+
+_ZZ_FIXD_DIR_TEMPLATE_="$_DIRSTART_$_DSTDIR_/$_EXT_/$_YEARMONTH_/$_MAKE_$_ANDROIDMANUFACTURER_/$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_$_SOFTWARE_"
+_ZZ_FIXD_DIR_TEMPLATEdesc_="#* STANDARD DIR TEMPLATE"
+
+
+#_ZZ_FIXD_FILENAME_TEMPLATE_NOEXIF_="$_FNAMESTART_$_SDATEFULL_$_IMAGESIZE_${exifToolBaseNameSeperator}((%f))$_COUNTER_.$_EXT_"
+#_ZZ_FIXD_FILENAME_TEMPLATE_NOEXIFdesc_="#* Same as standard template but we force keeping the old filename."
+
+
+_ZZ_KEEP_FILENAME_TEMPLATE_="$_FNAMESTART_%f$_COUNTER_.$_EXT_"
+_ZZ_KEEP_FILENAME_TEMPLATEdesc_="#* KEEPS EXISTING FILENAME + ADDS COLLISION AVOIDANCE"
+#-filename=%f.$_EXT_.xmp$_COUNTER_
+#_ZZ_TESTFIXD_FILENAME_TEMPLATE_NOEXIF_="$_FNAMESTART_%f$_COUNTER_.$_EXT_"
+
+_ZZ_NOEXIF_DIR_TEMPLATE_="$_DIRSTART_$_DSTDIR_/$_NOEXIFDEST_/$_EXT_/$_YEARMONTH_/$_MAKE_$_ANDROIDMANUFACTURER_/$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_$_SOFTWARE_"
+_ZZ_NOEXIF_DIR_TEMPLATEdesc_="#* MISSING EXIF DATA DIR TEMPLATE"
+
+#_ZZ_FIXD_DIR_TEMPLATE_NOEXIF_=    "$_DIRSTART_$_DSTDIR_/$_NOEXIFDEST_/$_EXT_/$_MAKE_$_ANDROIDMANUFACTURER_/$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_$_SOFTWARE_/$_YEARMONTH_"
+#_ZZ_TESTFIXD_DIR_TEMPLATE_NOEXIF_= "$_DIRSTART_$_DSTDIR_/$_NOEXIFDEST_/$_EXT_/$_MAKE_$_ANDROIDMANUFACTURER_/$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_$_SOFTWARE_/"
+
+

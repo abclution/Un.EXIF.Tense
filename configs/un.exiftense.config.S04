@@ -1,15 +1,16 @@
+#!/bin/bash
 
 ###############################################################################
 #* USER FACING VARIABLES ######################################################
 #* YOU CAN SET DEFAULT OPTIONS FOR COMMAND LINE SWITCHES BELOW
 ###############################################################################
-SRCDIR="./in"
-DSTDIR="./out"
+SRCDIR=""
+DSTDIR=""
 hashALGO="SHA512"
 XMPFunction="True"
 RECURSE="True"
 QT_UTC=0
-KEEPName="True"
+KEEPName="False"
 TESTMODE="False"
 TESTMODERESET="False"
 VIDEOS="True"
@@ -20,7 +21,7 @@ PHOTOS="True"
 DEBUG="False"
 
 VERBOSE="False"
-vLVL=2 # Verbosity level for exiftool when set to true.
+vLVL=1 # Verbosity level for exiftool when set to true.
 # Verbose overrides quiet mode, Verbose 0 exiftool prints current filename only.
 
 #! DEBUG SLEEP TIMER, TIME BETWEEN COMMANDS TO DEBUG ONSCREEN INFO
@@ -41,7 +42,7 @@ saveFilesDest_REFTEMPLATE="${SCRIPT_DIR}/configs/ARGFILES/REFERENCE-Templates"
 #* USER CONFIG: EXTENSION LISTS FOR TYPES OF FILES YOU WANT THIS SCRIPT TO DEAL WITH
 ###############################################################################
 #! PHOTO EXTENSION LIST
-declare -g -a EXTList_Photos=("webp" "dng" "jpg" "heic" "png" "gif" "bmp" "tiff" "tif")
+declare -g -a EXTList_Photos=("webp" "dng" "jpg" "heic" "png" "gif" "bmp" "tiff" "tif" "svg")
 
 #! VIDEO EXTENSION LIST
 declare -g -a EXTList_Videos=("mov" "mp4" "mpg" "3gp" "wmv" "webm" "avi" "m4v")
@@ -67,18 +68,23 @@ exifToolBaseNameSeperator="___"
 #! BASE PATH TO VARIABLE CONFIG LIST
 f_externalVarlist="${SCRIPT_DIR}/configs/VARLISTS/VARLIST"
 
-#! BASE PATH TO ARGFILE TEMPLATES
-ARGFiles_PATH="${SCRIPT_DIR}/configs/ARGFILES/SERIES04"
 
 ###############################################################################
 # ARGFILE TEMPLATE NAMES (FILENAMES)
-# List of argfile filenames in ARGFiles_PATH to run in the order you wish to run them.
+#! BASE PATH TO ARGFILE TEMPLATES
+ARGFiles_PATH="${SCRIPT_DIR}/configs/ARGFILES/SERIES04"
 
+#* Define the ARGFILE extension
+# ARGFile_EXT="argfile.sh"
+
+
+# List of argfile filenames in ARGFiles_PATH to run in the order you wish to run them.
 # Can be formatted like this, all in one declaration, or one by one, or a mix.
 # declare -a TESTMODEARGFileTemplatesList=("TEMPLATE-01" "TEMPLATE-02")
+#! If not specified,  will load all files in the $ARGFiles_PATH that match $ARGFile_EXT
 
 declare -g -a ARGFileTemplatesList=()
-ARGFileTemplatesList+=("S04_P01_RENAMES-FILE_AND_SIDECAR_TO_HASHVALUE.argfile.sh")
+#ARGFileTemplatesList+=("S04_P01_RENAMES-FILE_AND_SIDECAR_TO_HASHVALUE.argfile.sh")
 
 #echo -e "Templates active:${ARGFileTemplatesList[@]}\n"
 # TODO ADD FILE EXISTENCE CHECK FOR TEMPLATES
@@ -90,7 +96,7 @@ ARGFileTemplatesList+=("S04_P01_RENAMES-FILE_AND_SIDECAR_TO_HASHVALUE.argfile.sh
 # Alternate list of argfile templates to be used in TESTMODE.
 declare -g -a TESTMODEARGFileTemplatesList=()
 
-TESTMODEARGFileTemplatesList+=("S04_P01_RENAMES-FILE_AND_SIDECAR_TO_HASHVALUE.argfile.sh")
+#TESTMODEARGFileTemplatesList+=("S04_P01_RENAMES-FILE_AND_SIDECAR_TO_HASHVALUE.argfile.sh")
 
 #echo -e "Templates active for TESTMODE (if active): ${TESTMODEARGFileTemplatesList[@]} \n"
 

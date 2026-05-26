@@ -1,0 +1,85 @@
+#!/bin/bash
+# shellcheck disable=all
+# exiftool argfile
+
+###############################################################################
+#! 	TITLE: RENAME-AND-MOVE-XMP-SIDECAR-CHECKSUM-NAMING-SCHEME
+#~ 	VERSION:  2026-05-10 12:51 PM
+#*  DESCRIPTION: renames  xmp sidecars based on their source media file  (only certain formats are supported via exiftool )
+#*  to their exiftool derived data hash (which excludes the metadata values during calculations)
+#*  And sorts them into the defined dir structure.
+
+#!  TEST:         STATUS:
+#!  TEST:         STATUS:
+#!  TEST:         STATUS:
+#   TODO:
+# #############################################################################################
+# $_FMTLINE_
+# $_FMTLINE_
+# #############################################################################################
+# #######! RENAMES XMP TO HASH VALUE OF CORRESPONDING IMAGE
+# #* VALIDATED - 2026-05-09 7:05 PM
+# #############################################################################################
+# $_VERBOSE_
+# -v2
+# -m
+# -P
+# $_EXTLIST_
+# --ext
+# xmp
+# -tagsfromfile
+# @
+# $_SRCFILE_EXT_XMP_
+# $_SRCFILE_XMP_
+# -overwrite_original
+# -api
+# ImageHashType=SHA512
+# -filename <${ImageDataHash}.%e.xmp$_COUNTER_
+# $_DIRSTART_$_DSTDIR_/$_MAKE_$_ANDROIDMANUFACTURER_/$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_/$_SOFTWARE_/$_EXT_/$_YEARMONTH_
+# $_RECURSE_
+# $_SRCDIR_
+# -execute
+# #############################################################################################
+# $_FMTLINE_
+# $_FMTLINE_
+# #############################################################################################
+
+
+
+
+
+
+
+#############################################################################################
+$_FMTLINE_
+$_FMTLINE_
+#############################################################################################
+#######! RENAMES XMP TO HASH VALUE OF CORRESPONDING IMAGE
+#* VALIDATED - 2026-05-09 7:05 PM
+#############################################################################################
+
+#_EZ_PRE_="$(echo -e "$_VERBOSE_\n$_SUPRESSMINERR_\n$_PRESERVE_\n$_EXTLIST_\n$_NOXMP_\n$_GETTAGSFROMCURRENTFILE_\n$_WRITEOVERFILE_")"
+$_ZZEZ_PRE_
+
+# $_SRCFILE_EXT_XMP_
+# $_SRCFILE_XMP_
+
+$_TARGETFILE_EXT_XMP_
+$_TARGETFILE_XMP_
+
+-api
+ImageHashType=SHA512
+-filename<${ImageDataHash}.%e.xmp$_COUNTER_
+
+#_FIXD_DIR_TEMPLATE_="$_DIRSTART_$_DSTDIR_/$_MAKE_$_ANDROIDMANUFACTURER_/$_MODEL_$_ANDROIDMODEL_$_XIAOMIPRODUCTNAME_/$_SOFTWARE_/$_EXT_/$_YEARMONTH_"
+$_FIXD_DIR_TEMPLATE_
+
+#_EZ_POST_="$(echo -e "$_RECURSE_\n$_SRCDIR_\n$_EXECUTE_")"
+# TODO recurse and srcdir dont work 
+$_ZZEZ_POST_
+#############################################################################################
+$_FMTLINE_
+$_FMTLINE_
+#############################################################################################
+
+
